@@ -19,7 +19,7 @@
                 <table class="table">
                     <thead>
                         <tr>
-                            <th scope="col">#</th>
+                            <th scope="col">#Id</th>
                             <th scope="col">First Name</th>
                             <th scope="col">Last Name</th>
                             <th scope="col">Age</th>
@@ -31,9 +31,25 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-
-                        </tr>
+                        <% if(users.length > 0){ %>
+                            <% for(let user of users) { %>
+                                <tr>
+                                    <td><%= user._id %></td>
+                                    <td><%= user.firstname %></td>
+                                    <td><%= user.lastname %></td>
+                                    <td><%= user.age %></td>
+                                    <td><%= user.qualification %></td>
+                                    <td><%= user.email %></td>
+                                    <td><%= user.phone %></td>
+                                    <td><%= user.password %></td>
+                                </tr>       
+                            <% } %>
+                        <% } else {  %>
+                            <tr>
+                                <td colspan="9">No Records found</td>
+                            </tr>
+                        <% } %>
+                        
                     </tbody>
                 </table>
             </div> <!-- End of col 12 -->

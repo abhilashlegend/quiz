@@ -20,6 +20,15 @@ class User {
             console.log(error);
         })
     }
+
+    fetchAll() {
+        const db = getDb();
+        return db.collection('users').find().toArray().then(users => {
+            return users;
+        }).catch(error => {
+            console.log(error);
+        })
+    }
 }
 
 module.exports = User;

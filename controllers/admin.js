@@ -22,5 +22,14 @@ exports.saveUser = (req, res, next) => {
 }
 
 exports.usersPage = (req, res, next) => {
-    res.render("./admin/users.ejs", {pageTitle: "Users"});
+    const user = new User();
+    let allUsers = null;
+    user.fetchAll().then(users => {
+        allUsers = users;
+        res.render("./admin/users.ejs", {pageTitle: "Users", users: allUsers });
+    }).catch(error => {
+        console.log(error);
+    })
+    
 }
+
