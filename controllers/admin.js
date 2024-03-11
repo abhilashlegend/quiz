@@ -22,14 +22,21 @@ exports.saveUser = (req, res, next) => {
 }
 
 exports.usersPage = (req, res, next) => {
-    const user = new User();
+
     let allUsers = null;
-    user.fetchAll().then(users => {
+    User.fetchAll().then(users => {
         allUsers = users;
         res.render("./admin/users.ejs", {pageTitle: "Users", users: allUsers });
     }).catch(error => {
         console.log(error);
+    })    
+}
+
+exports.editUserPage = (req, res, next) => {
+    User.findById(req.params.userId).then(user => {
+        res.render("./admin/edit-user.ejs", { pageTitle: "Edit User", user: user });
+    }).catch(error => {
+        console.log(error);
     })
-    
 }
 

@@ -8,6 +8,8 @@ router.get('/add-user', adminController.addUserPage);
 
 router.post('/add-user', adminController.saveUser);
 
+router.get('/edit-user/:userId', adminController.editUserPage);
+
 router.get("/users", adminController.usersPage);
 
 module.exports = router;

@@ -1,4 +1,5 @@
 const getDb = require('../util/database').getDb;
+const mongodb = require('mongodb');
 
 class User {
     constructor(firstname, lastname, age, qualification, email, phone, password, score){
@@ -21,10 +22,19 @@ class User {
         })
     }
 
-    fetchAll() {
+    static fetchAll() {
         const db = getDb();
         return db.collection('users').find().toArray().then(users => {
             return users;
+        }).catch(error => {
+            console.log(error);
+        })
+    }
+
+    static findById(userId){
+        const db = getDb();
+        return db.collection('users').find({_id: new mongodb.ObjectId(userId)}).next().then(user => {
+            return user;
         }).catch(error => {
             console.log(error);
         })

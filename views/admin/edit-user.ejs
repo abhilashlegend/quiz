@@ -1,0 +1,60 @@
+<%- include('../includes/admin/head.ejs') %>
+
+<%- include('../includes/admin/navigation.ejs') %>
+
+<main>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <h1>Edit User</h1>
+                <form method="post" action="/admin/edit-user">
+                    <div class="mb-3">
+                        <label for="firstname" class="form-label">First Name</label>
+                        <input type="text" value="<%= user.firstname %>" class="form-control" id="firstname" name="firstname" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="lastname" class="form-label">Last Name</label>
+                        <input type="text" class="form-control" value="<%= user.lastname %>" id="lastname" name="lastname" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="age" class="form-label">Age</label>
+                        <input type="text" value="<%= user.age %>" class="form-control" id="age" name="age" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="qualification" class="form-label">Qualification</label>
+                        <input type="text" class="form-control" value="<%= user.qualification %>" id="qualification" name="qualification" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" value="<%= user.email %>" class="form-control" id="email" name="email" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="phone" class="form-label">Phone</label>
+                        <input type="text" value="<%= user.phone %>" class="form-control" id="phone" name="phone" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" class="form-control" value="<%= user.password %>" id="password" name="password" />
+                    </div>
+
+                    <div class="mb-3">
+                        <input type="hidden" id="userid" name="userid" value="<%= user._id %>" />
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <button type="reset" class="btn btn-danger">Reset</button>
+                        <a type="button" class="btn btn-secondary" href="/admin/users">Cancel</a>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+
+
+<%- include('../includes/admin/footer.ejs') %>
