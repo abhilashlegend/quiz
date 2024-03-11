@@ -31,6 +31,11 @@ class User {
         })
     }
 
+    update(userId) {
+        const db = getDb();
+        return db.collection('users').updateOne({_id: new mongodb.ObjectId(userId)}, { $set: this });
+    }
+
     static findById(userId){
         const db = getDb();
         return db.collection('users').find({_id: new mongodb.ObjectId(userId)}).next().then(user => {
