@@ -33,7 +33,7 @@
                     <tbody>
                         <% if(users.length > 0){ %>
                             <% for(let user of users) { %>
-                                <tr>
+                                <tr class="align-middle">
                                     <td><%= user._id %></td>
                                     <td><%= user.firstname %></td>
                                     <td><%= user.lastname %></td>
@@ -43,7 +43,11 @@
                                     <td><%= user.phone %></td>
                                     <td><%= user.password %></td>
                                     <td>
-                                        <i class="bi bi-pencil-square"></i>
+                                        <a class="edit-icon" href="/admin/edit-user/<%= user._id %>" aria-label="edit user"><i class="bi bi-pencil-square"></i></a>
+
+                                        <a class="delete-icon" href="/admin/delete-user/<%= user._id %>" aria-label="delete user">
+                                            <i class="bi bi-trash3-fill"></i>
+                                        </a>
                                     </td>
                                 </tr>       
                             <% } %>
