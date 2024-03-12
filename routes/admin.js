@@ -24,4 +24,6 @@ router.post("/add-quiz", adminController.addQuiz);
 
 router.get("/edit-quiz/:quizId", adminController.editQuizPage);
 
+router.post("/edit-quiz", adminController.updateQuiz);
+
 module.exports = router;

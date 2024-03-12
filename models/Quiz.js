@@ -29,6 +29,11 @@ class Quiz {
         });
     }
 
+    update(quizId) {
+        const db = getDb();
+        return db.collection('quizzes').updateOne({_id: new mongodb.ObjectId(quizId)}, {$set: this });
+    }
+
 }
 
 module.exports = Quiz;

@@ -98,3 +98,14 @@ exports.editQuizPage = (req, res, next) => {
         console.log(error);
     })
 }
+
+exports.updateQuiz = (req, res, next) => {
+    const title = req.body.title;
+    const quizId = req.body.quizid;
+    const quiz = new Quiz(title);
+    return quiz.update(quizId).then(result => {
+        res.redirect("/admin/quizzes");
+    }).catch(error => {
+        console.log(error);
+    });
+}
