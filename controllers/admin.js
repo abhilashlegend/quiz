@@ -1,4 +1,5 @@
 const User = require("../models/User");
+const Quiz = require("../models/Quiz");
 
 exports.addUserPage = (req, res, next) => {
     res.render('./admin/add-user.ejs', {pageTitle: 'Add User', path: req.path });
@@ -67,3 +68,25 @@ exports.deleteUser = (req, res, next) => {
     })
 }
 
+exports.addQuizPage = (req, res, next) => {
+    res.render("./admin/add-quiz.ejs", {pageTitle: "Add Quiz", path: req.path })
+}
+
+exports.quizPage = (req, res, next) => {
+   
+    Quiz.fetchAll().then(quizzes => {
+        res.render("./admin/quizzes.ejs", { pageTitle: "Quizzes", path: req.path,  quizzes });
+    }).catch(error => {
+        console.log(error);
+    })    
+}
+
+exports.addQuiz = (req, res, next) => {
+    const title = req.body.title;
+    const quiz = new Quiz(title);
+    quiz.save().then(result => {
+        res.redirect("/admin/quizzes");
+    }).catch(error => {
+        console.log(error);
+    })
+}

@@ -1,0 +1,55 @@
+<%- include('../includes/admin/head.ejs') %>
+
+<%- include('../includes/admin/navigation.ejs') %>
+
+<main>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <h1>Quizzes</h1>
+            </div>
+
+            <div class="col-md-6 mt-1 d-flex justify-content-end align-items-center">
+                <a href="/admin/add-quiz" class="btn btn-primary">Add Quiz</a>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">#Id</th>
+                            <th scope="col">Title</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if(quizzes.length > 0){ %>
+                            <% for(let quiz of quizzes) { %>
+                                <tr class="align-middle">
+                                    <td><%= quiz._id %></td>
+                                    <td><%= quiz.title %></td>
+                                    <td>
+                                        <a class="edit-icon" href="/admin/edit-quiz/<%= quiz._id %>" aria-label="edit quiz"><i class="bi bi-pencil-square"></i></a>
+
+                                        <a class="delete-icon" href="/admin/delete-quiz/<%= quiz._id %>" aria-label="delete quiz">
+                                            <i class="bi bi-trash3-fill"></i>
+                                        </a>
+                                    </td>
+                                </tr>       
+                            <% } %>
+                        <% } else {  %>
+                            <tr>
+                                <td colspan="9">No Records found</td>
+                            </tr>
+                        <% } %>
+                        
+                    </tbody>
+                </table>
+            </div> <!-- End of col 12 -->
+        </div> <!-- End of row -->
+    </div> <!-- End of container -->
+</main>
+
+<%- include('../includes/admin/footer.ejs') %>
