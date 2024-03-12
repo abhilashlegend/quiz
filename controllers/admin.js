@@ -58,3 +58,12 @@ exports.updateUser = (req, res, next) => {
     })
 }
 
+exports.deleteUser = (req, res, next) => {
+    User.delete(req.params.userId).then(result => {
+        console.log("User deleted");
+        res.redirect("/admin/users");
+    }).catch(error => {
+        console.log(error);
+    })
+}
+

@@ -44,6 +44,11 @@ class User {
             console.log(error);
         })
     }
+
+    static delete(userId){
+        const db = getDb();
+        return db.collection('users').deleteOne({_id: new mongodb.ObjectId(userId)});
+    }
 }
 
 module.exports = User;
