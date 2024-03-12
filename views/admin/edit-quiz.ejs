@@ -1,0 +1,30 @@
+<%- include('../includes/admin/head.ejs') %>
+
+<%- include("../includes/admin/navigation.ejs") %>
+
+<main>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <h1>Edit Quiz</h1>
+                <form method="post" action="/admin/edit-quiz">
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Title</label>
+                        <input type="text" class="form-control" value="<%= quiz.title %>" id="title" name="title" />
+                    </div>
+                    
+                    <div class="mb-3">
+                        <input type="hidden" name="userid" id="userid" value="<%= quiz._id %>" />
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <button type="reset" class="btn btn-danger">Reset</button>
+                        <a type="button" class="btn btn-secondary" href="/admin/quizzes">Cancel</a>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+
+
+<%- include("../includes/admin/footer.ejs") %>

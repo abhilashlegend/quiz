@@ -1,4 +1,5 @@
 const getDb = require('../util/database').getDb;
+const mongodb = require('mongodb');
 
 class Quiz {
     constructor(title){
@@ -17,6 +18,15 @@ class Quiz {
         }).catch(error => {
             console.log(error);
         })
+    }
+
+    static getById(quizId){
+        const db = getDb();
+        return db.collection('quizzes').find({_id: new mongodb.ObjectId(quizId) }).next().then(quiz => {
+            return quiz;
+        }).catch(error => {
+            console.log(error);
+        });
     }
 
 }

@@ -90,3 +90,11 @@ exports.addQuiz = (req, res, next) => {
         console.log(error);
     })
 }
+
+exports.editQuizPage = (req, res, next) => {
+    Quiz.getById(req.params.quizId).then(quiz => {
+        res.render("./admin/edit-quiz.ejs", {pageTitle: "Edit Quiz", path: req.path, quiz })
+    }).catch(error => {
+        console.log(error);
+    })
+}
