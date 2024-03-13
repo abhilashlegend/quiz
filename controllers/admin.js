@@ -103,9 +103,17 @@ exports.updateQuiz = (req, res, next) => {
     const title = req.body.title;
     const quizId = req.body.quizid;
     const quiz = new Quiz(title);
-    return quiz.update(quizId).then(result => {
+    quiz.update(quizId).then(result => {
         res.redirect("/admin/quizzes");
     }).catch(error => {
         console.log(error);
     });
+}
+
+exports.deleteQuiz = (req, res, next) => {
+    Quiz.delete(req.params.quizId).then(result => {
+        res.redirect("/admin/quizzes");
+    }).catch(error => {
+        console.log(error);
+    })
 }

@@ -34,6 +34,11 @@ class Quiz {
         return db.collection('quizzes').updateOne({_id: new mongodb.ObjectId(quizId)}, {$set: this });
     }
 
+    static delete(quizId) {
+        const db = getDb();
+        return db.collection('quizzes').deleteOne({_id: new mongodb.ObjectId(quizId)});
+    }
+
 }
 
 module.exports = Quiz;
