@@ -34,6 +34,8 @@ router.get("/quiz/add-question/:quizId", adminController.addQuestionPage);
 
 router.post("/quiz/add-question", adminController.saveQuestion);
 
+router.post("/quiz/edit-question", adminController.updateQuestion);
+
 router.get("/quiz/edit-question/:qId", adminController.editQuestionPage);
 
 router.post("/quiz/add-option", adminController.saveOption);

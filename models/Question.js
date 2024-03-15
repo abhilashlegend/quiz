@@ -34,6 +34,11 @@ class Question {
         })
     }
 
+    static updateQuestion(qId, updatedTitle){
+        const db = getDb();
+        return db.collection('questions').updateOne({_id: new mongodb.ObjectId(qId)}, {$set: {title: updatedTitle}})
+    }
+
     static addOption(qId, option, iscorrect){
         const db = getDb();
 

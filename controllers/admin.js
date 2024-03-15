@@ -153,6 +153,15 @@ exports.editQuestionPage = (req, res, next) => {
     })   
 }
 
+exports.updateQuestion = (req, res, next) => {
+    
+    Question.updateQuestion(req.body.qId, req.body.title).then(result => {
+        res.redirect("/admin/quiz/" + req.body.quizId);
+    }).catch(error => {
+        console.log(error);
+    })
+}
+
 exports.saveOption = (req, res, next) => {
     const option = req.body.option;
     const questionId = req.body.questionId;
