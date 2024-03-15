@@ -1,5 +1,7 @@
 const User = require("../models/User");
 const Quiz = require("../models/Quiz");
+const Question = require("../models/Question");
+const Option = require("../models/Option");
 
 exports.addUserPage = (req, res, next) => {
     res.render('./admin/add-user.ejs', {pageTitle: 'Add User', path: req.path });
@@ -113,6 +115,64 @@ exports.updateQuiz = (req, res, next) => {
 exports.deleteQuiz = (req, res, next) => {
     Quiz.delete(req.params.quizId).then(result => {
         res.redirect("/admin/quizzes");
+    }).catch(error => {
+        console.log(error);
+    })
+}
+
+exports.questionsPage = (req, res, next) => {
+    let quizQuestions = [];
+    const quizId = req.params.quizId;
+    Question.fetchAll(quizId).then(questions => {
+        quizQuestions = questions;
+        res.render("./admin/questions.ejs", { pageTitle: "Quiz Questions", path: req.path, questions: quizQuestions, quizId: req.params.quizId });
+    }).catch(error => {
+        console.log(error);
+    })
+}
+
+exports.addQuestionPage = (req, res, next) => {
+    res.render("./admin/add-question.ejs", { pageTitle: "Add Question", path: req.path, quizId: req.params.quizId })
+}
+
+exports.saveQuestion = (req, res, next) => {
+    const title = req.body.title;
+    const quizId = req.body.quizId;
+    
+    const question = new Question(title, quizId);
+    question.save().then(result => {
+        res.redirect("/admin/quiz/" + quizId);
+    }).catch(error => {
+        console.log(error);
+    })
+}
+
+exports.editQuestionPage = (req, res, next) => {
+    Question.getById(req.params.qId).then(question => {
+        res.render("./admin/edit-question.ejs", { pageTitle: "Edit Question",  path: req.path, question })
+    })   
+}
+
+exports.saveOption = (req, res, next) => {
+    const option = req.body.option;
+    const questionId = req.body.questionId;
+    const iscorrect = req.body.iscorrect;
+    const quizId = req.body.quizId;
+
+    /*
+    const optionObj = new Option(option, questionId, iscorrect);
+
+
+
+    optionObj.save().then(result => {
+        res.redirect("/admin/quiz/" + quizId);
+    }).catch(error => {
+        console.log(error);
+    })
+    */
+
+    Question.addOption(questionId, option, iscorrect).then(result => {
+        res.redirect("/admin/quiz/" + quizId);
     }).catch(error => {
         console.log(error);
     })

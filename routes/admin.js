@@ -28,4 +28,14 @@ router.post("/edit-quiz", adminController.updateQuiz);
 
 router.get("/delete-quiz/:quizId", adminController.deleteQuiz);
 
+router.get("/quiz/:quizId", adminController.questionsPage);
+
+router.get("/quiz/add-question/:quizId", adminController.addQuestionPage);
+
+router.post("/quiz/add-question", adminController.saveQuestion);
+
+router.get("/quiz/edit-question/:qId", adminController.editQuestionPage);
+
+router.post("/quiz/add-option", adminController.saveOption);
+
 module.exports = router;

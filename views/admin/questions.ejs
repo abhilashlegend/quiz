@@ -1,0 +1,93 @@
+<%- include('../includes/admin/head.ejs') %>
+
+<%- include('../includes/admin/navigation.ejs') %>
+
+<main>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <h1>Questions</h1>
+            </div>
+
+            <div class="col-md-6 mt-1 d-flex justify-content-end align-items-center">
+                <a href="/admin/quiz/add-question/<%= quizId %>" class="btn btn-primary">Add Question</a>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">#Id</th>
+                            <th scope="col">Title</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if(questions.length > 0){ %>
+                            <% for(let question of questions) { %>
+                                <tr class="align-middle">
+                                    <td><%= question._id %></td>
+                                    <td><a href="/admin/quiz/<%= question._id %>"><%= question.title %></a></td>
+                                    <td>
+                                        <a class="edit-icon" href="/admin/quiz/edit-question/<%= question._id %>" aria-label="edit question"><i class="bi bi-pencil-square"></i></a>
+
+                                        <a class="delete-icon" href="/admin/quiz/delete-question/<%= question._id %>" aria-label="delete question"><i class="bi bi-trash3-fill"></i></a>
+                                        <button type="button" data-qid="<%= question._id %>" class="btn btn-primary add-option-btn"  data-bs-toggle="modal" data-bs-target="#addOptionModal"><i class="bi bi-clipboard2-plus"></i></button>
+                                    </td>
+                                </tr>       
+                            <% } %>
+                        <% } else {  %>
+                            <tr>
+                                <td colspan="9">No Records found</td>
+                            </tr>
+                        <% } %>
+                        
+                    </tbody>
+                </table>
+            </div> <!-- End of col 12 -->
+        </div> <!-- End of row -->
+    </div> <!-- End of container -->
+</main>
+
+
+<!-- Modal -->
+<div class="modal fade" id="addOptionModal" tabindex="-1" aria-labelledby="addOptionModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addOptionModalLabel">Add Option</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form method="post" action="/admin/quiz/add-option">
+        <div class="modal-body">
+         
+            <div class="mb-3">
+                <label for="option" class="form-label">Option</label>
+                <input type="text" class="form-control" id="option" name="option" />
+            </div>
+            <div class="mb-3">
+                <p><strong>Choose correct or wrong</strong></p>
+                <div class="form-check">
+                    <input type="radio" class="form-check-input" id="iscorrect" value="true" name="iscorrect" />
+                    <label for="iscorrect" class="form-check-label">Correct</label>
+                </div>
+                <div class="form-check">
+                    <input type="radio" class="form-check-input" id="iswrong" value="false" name="iscorrect" />
+                    <label for="iswrong" class="form-check-label">Wrong</label>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+           <input type="hidden" value="" id="qId" name="questionId" />
+           <input type="hidden" value="<%= quizId %>" id="quizId" name="quizId" />
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Add</button>
+        </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+<%- include('../includes/admin/footer.ejs') %>

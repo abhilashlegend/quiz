@@ -29,7 +29,7 @@
                             <% for(let quiz of quizzes) { %>
                                 <tr class="align-middle">
                                     <td><%= quiz._id %></td>
-                                    <td><%= quiz.title %></td>
+                                    <td><a href="/admin/quiz/<%= quiz._id %>"><%= quiz.title %></a></td>
                                     <td>
                                         <a class="edit-icon" href="/admin/edit-quiz/<%= quiz._id %>" aria-label="edit quiz"><i class="bi bi-pencil-square"></i></a>
 
