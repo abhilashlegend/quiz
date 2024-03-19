@@ -162,6 +162,14 @@ exports.updateQuestion = (req, res, next) => {
     })
 }
 
+exports.deleteQuestion = (req, res, next) => {
+    Question.deleteQuestion(req.params.questionId).then(result => {
+        res.redirect("/admin/quiz/" + req.query.quizid);
+    }).catch(error => {
+        console.log(error);
+    })
+}
+
 exports.saveOption = (req, res, next) => {
     const option = req.body.option;
     const questionId = req.body.questionId;

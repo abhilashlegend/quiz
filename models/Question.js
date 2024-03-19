@@ -39,6 +39,11 @@ class Question {
         return db.collection('questions').updateOne({_id: new mongodb.ObjectId(qId)}, {$set: {title: updatedTitle}})
     }
 
+    static deleteQuestion(qId){
+        const db = getDb();
+        return db.collection('questions').deleteOne({_id: new mongodb.ObjectId(qId)});
+    }
+
     static addOption(qId, option, iscorrect){
         const db = getDb();
 
