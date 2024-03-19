@@ -42,4 +42,6 @@ router.get("/quiz/delete-question/:questionId", adminController.deleteQuestion);
 
 router.post("/quiz/add-option", adminController.saveOption);
 
+router.get("/quiz/delete-option/:optionId", adminController.deleteOption);
+
 module.exports = router;

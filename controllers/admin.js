@@ -194,3 +194,11 @@ exports.saveOption = (req, res, next) => {
         console.log(error);
     })
 }
+
+exports.deleteOption = (req, res, next) => {
+    Question.deleteOption(req.query.questionid, req.params.optionId).then(result => {
+        res.redirect("/admin/quiz/" + req.query.quizid);
+    }).catch(error => {
+        console.log(error);
+    })
+}
