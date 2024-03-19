@@ -67,6 +67,20 @@ class Question {
             console.log(error);
         })
     }
+
+    static deleteOption(qId, optionId){
+        const db = getDb();
+
+        return db.collection('questions').findOne({_id: new mongodb.ObjectId(qId)}).then(question => {
+            const options = question.options;
+            const updatedOption = question.options.filter(option => {
+                return option._id.toString() !== optionId.toString()
+            })
+            return db.collection('questions').updateOne({_id: new  mongodb.ObjectId(qId)}, {$set: { options: updatedOption}});
+        }).catch(error => {
+            console.log(error);
+        })
+    }
 }
 
 module.exports = Question;

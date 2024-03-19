@@ -2,3 +2,19 @@
 .edit-icon { color: green;  }
 .delete-icon { color: red; }
 .add-options { color: blue; }
+.question-accordian-header { display: flex;}
+.question-accordian-btn { margin-right: 1rem;}
+.quiz-accordion-item { border:none; border-bottom:1px solid #dddddd; }
+.question-options { margin: 0; list-style: none; }
+.question-options li { display: flex; align-content: space-between; flex-wrap: wrap; }
+.question-options li:before {
+    content: "\F133"; 
+    font-family: bootstrap-icons !important;
+    color:green;
+    display: inline-block;
+    margin-left: calc( var(--icon-space) * -1 );
+    width: var(--icon-space);
+    margin-right: 2rem;
+    margin-top: 0px;
+  }
+.question-options li span { margin-right: 1rem;}
