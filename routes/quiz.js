@@ -8,4 +8,6 @@ router.get('/', quizController.home);
 
 router.get("/login", quizController.loginPage);
 
+router.get("/signup", quizController.signupPage);
+
 module.exports = router;
