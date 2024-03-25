@@ -14,16 +14,16 @@
             </div>
         </div>
 
-        <div class="row mt-4">
+        <div class="row mt-4 pb-4">
             <div class="col-md-12">
                 <% if(questions.length > 0){ %>
                     <% let count = 1 %>
-                <div class="accordion" id="accordionExample">
+                <div class="accordion" id="QuestionAccordion">
 
                     <% for(let question of questions) { %>
                     <div class="accordion-item quiz-accordion-item">
                       <h2 class="accordion-header question-accordian-header" id="headingOne">
-                        <button class="accordion-button question-accordian-btn" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                        <button class="accordion-button question-accordian-btn" type="button" data-bs-toggle="collapse" data-bs-target="#<%= question._id %>" aria-expanded="false" aria-controls="<%= question._id %>">
                           #<%= count %> <%= question.title %>
                         </button>
                         <a class="edit-icon" href="/admin/quiz/edit-question/<%= question._id %>" aria-label="edit question"><i class="bi bi-pencil-square"></i></a>
@@ -31,13 +31,13 @@
                                         <a class="delete-icon" href="/admin/quiz/delete-question/<%= question._id %>?quizid=<%= quizId %>" aria-label="delete question"><i class="bi bi-trash3-fill"></i></a>
                                         <button type="button" data-qid="<%= question._id %>" class="btn btn-primary add-option-btn"  data-bs-toggle="modal" data-bs-target="#addOptionModal"><i class="bi bi-clipboard2-plus"></i></button>
                       </h2>
-                      <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                      <div id="<%= question._id %>" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#QuestionAccordion">
                         <div class="accordion-body">
                             <% if(question.options.length > 0) { %> 
                             <ul class="question-options">
                                 <% for(let option of question.options) { %>
                                     <li class="mb-3">
-                                        <span><%= option.option %></span>
+                                        <span class="<%= option.iscorrect == 'true' ? 'text-success' :  'text-danger' %>"><%= option.option %></span>
                                         <a class="delete-icon float-right" href="/admin/quiz/delete-option/<%= option._id %>?quizid=<%= quizId %>&questionid=<%= question._id %>" aria-label="delete question"><i class="bi bi-x-circle-fill" style="margin-top:-5px; position: absolute;"></i></a>
                                     </li>
                                 <% } %>
@@ -70,16 +70,16 @@
          
             <div class="mb-3">
                 <label for="option" class="form-label">Option</label>
-                <input type="text" class="form-control" id="option" name="option" />
+                <input type="text" class="form-control" id="option" name="option" required />
             </div>
             <div class="mb-3">
                 <p><strong>Choose correct or wrong</strong></p>
                 <div class="form-check">
-                    <input type="radio" class="form-check-input" id="iscorrect" value="true" name="iscorrect" />
+                    <input required type="radio" class="form-check-input" id="iscorrect" value="true" name="iscorrect" />
                     <label for="iscorrect" class="form-check-label">Correct</label>
                 </div>
                 <div class="form-check">
-                    <input type="radio" class="form-check-input" id="iswrong" value="false" name="iscorrect" />
+                    <input required type="radio" class="form-check-input" id="iswrong" value="false" name="iscorrect" />
                     <label for="iswrong" class="form-check-label">Wrong</label>
                 </div>
             </div>

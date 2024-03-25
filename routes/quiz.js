@@ -6,4 +6,6 @@ const quizController = require('../controllers/quiz');
 
 router.get('/', quizController.home);
 
+router.get("/login", quizController.loginPage);
+
 module.exports = router;
