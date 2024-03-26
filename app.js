@@ -5,6 +5,7 @@ const path = require('path');
 const mongoConnect = require('./util/database').mongoConnect;
 const adminRoutes = require('./routes/admin');
 const quizRoutes = require('./routes/quiz');
+const session = require('express-session');
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(express.static(path.join(__dirname, 'public')));
@@ -12,6 +13,7 @@ app.use('/css', express.static(path.join(__dirname, 'node_modules/bootstrap/dist
 app.use('/js', express.static(path.join(__dirname, 'node_modules/bootstrap/dist/js')));
 app.use('/js', express.static(path.join(__dirname, 'node_modules/jquery/dist')));
 app.use('/css', express.static(path.join(__dirname, 'node_modules/bootstrap-icons/font')));
+app.use(session({ secret: 'my secret', resave: false, saveUninitialized: false }));
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
