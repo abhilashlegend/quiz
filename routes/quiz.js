@@ -10,4 +10,6 @@ router.get("/login", quizController.loginPage);
 
 router.get("/signup", quizController.signupPage);
 
+router.post("/register", quizController.signup);
+
 module.exports = router;
