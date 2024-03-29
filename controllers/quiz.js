@@ -1,5 +1,6 @@
 const { error } = require('jquery');
 const User = require('../models/User');
+const bcrypt = require('bcryptjs');
 
 exports.home = (req, res, next) => {
     res.render("index.ejs", {pageTitle: "Home" });
@@ -26,14 +27,19 @@ exports.signup = (req, res, next) => {
     User.findByEmail(email).then(user => {
         if(user){
             res.redirect("/signup");
-        } else {
-            const newUser = new User(firstname, lastname, age, qualification, email, phone, password, score);
+        } 
+        return bcrypt.hash(password, 12);
+            
+    
+    }).then(encrptedPassword => {
+        const newUser = new User(firstname, lastname, age, qualification, email, phone, encrptedPassword, score);
             newUser.save().then(result => {
                 res.redirect("/login");
             }).catch(error => {
                 console.error(error);
             });
-        }
+    }).catch(error => {
+        console.log(error);
     })   
 
     
