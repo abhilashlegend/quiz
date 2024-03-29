@@ -1,4 +1,5 @@
 const getDb = require('../util/database').getDb;
+const { error } = require('jquery');
 const mongodb = require('mongodb');
 
 class User {
@@ -39,6 +40,15 @@ class User {
     static findById(userId){
         const db = getDb();
         return db.collection('users').find({_id: new mongodb.ObjectId(userId)}).next().then(user => {
+            return user;
+        }).catch(error => {
+            console.log(error);
+        })
+    }
+
+    static findByEmail(email){
+        const db = getDb();
+        return db.collection('users').findOne({email: email}).then(user => {
             return user;
         }).catch(error => {
             console.log(error);

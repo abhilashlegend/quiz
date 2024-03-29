@@ -23,10 +23,18 @@ exports.signup = (req, res, next) => {
     const password = req.body.password;
     const score = 0;
 
-    const user = new User(firstname, lastname, age, qualification, email, phone, password, score);
-    user.save().then(result => {
-        res.redirect("/login");
-    }).catch(error => {
-        console.error(error);
-    });
+    User.findByEmail(email).then(user => {
+        if(user){
+            res.redirect("/signup");
+        } else {
+            const newUser = new User(firstname, lastname, age, qualification, email, phone, password, score);
+            newUser.save().then(result => {
+                res.redirect("/login");
+            }).catch(error => {
+                console.error(error);
+            });
+        }
+    })   
+
+    
 }

@@ -53,6 +53,7 @@ exports.updateUser = (req, res, next) => {
     const password = req.body.password;
     const score = req.body.score;
     const userId = req.body.userid;
+
     const user = new User(firstname, lastname, age, qualification, email, phone, password, score);
     return user.update(userId).then(result => {
         res.redirect("/admin/users");
