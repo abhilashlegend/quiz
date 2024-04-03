@@ -1,0 +1,22 @@
+<%- include('includes/head.ejs') %>
+
+<main class="mb-4">
+    <div class="container">
+        <div class="row">
+            
+                <% for(let quiz of quizzes){ %>
+                    <div class="col">
+                        <div class="card" style="width: 18rem;">
+                            <img src="..." class="card-img-top" alt="...">
+                            <div class="card-body">
+                                <h5 class="card-title"><%= quiz.title %> </h5>
+                                <a href="/quiz/<%= quiz._id %>?qno=0" class="btn btn-primary">Play </a>
+                            </div>
+                        </div>
+                    </div>
+                <% } %>
+        </div>
+    </div>
+</main>
+
+<%- include('includes/footer.ejs') %>

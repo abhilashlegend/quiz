@@ -1,0 +1,38 @@
+<%- include('includes/head.ejs') %>
+
+<main class="mb-4">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div id="result" class="quiz-body">
+                    <form name="quizForm" method="post" action="/quiz/<%= quizid %>?qno=<%= nextQIndex - 1 %>">
+                        <fieldset class="form-group">
+                            <h4><span id="qid"><%= currentQno %>.</span> <span id="question"><%= question.title %></span></h4>
+                        
+                        <div class="option-block-container" id="question-options">
+                            <% for(let option of question.options) { %>
+                                <div class="form-check option-block">
+                                    <label class="form-check-label">
+                                        <input type="radio" class="form-check-input" name="optionId" id="<%= option._id %>" value="<%= option._id %>">
+                                            <span id="optionval"><%= option.option %></span>
+                                    </label>
+                                </div>
+                            <% } %>
+                            
+                            
+                        </div> <!-- End of option block -->
+                    </fieldset>
+                         <input type="hidden" name="questionId" id="questionId" value="<%= question._id %>" />
+                         <a href="/quiz/<%= quizid %>?qno=<%= prevQIndex %>" name="previous" id="previous" class="btn btn-success" disabled="disabled">Previous</a>
+                         &nbsp;
+                         <input type="submit" name="saveBtn" id="saveBtn" class="btn btn-primary" value="Save answer" />
+                         &nbsp; 
+                         <a name="next" id="next" href="/quiz/<%= quizid %>?qno=<%= nextQIndex %>" class="btn btn-success">Next</a>
+                   </form>
+                   </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<%- include('includes/footer.ejs') %>

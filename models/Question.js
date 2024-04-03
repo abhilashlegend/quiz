@@ -1,4 +1,5 @@
 const getDb = require("../util/database").getDb;
+const { error } = require("jquery");
 const mongodb = require("mongodb");
 
 class Question {
@@ -80,6 +81,16 @@ class Question {
         }).catch(error => {
             console.log(error);
         })
+    }
+
+    static displayQuestion(sno){
+     const db = getDb();
+     return db.collection('questions').findOne({}, { sort: { _id: sno}}).then(question => {
+        return question;
+     }).catch(error => {
+        console.log(error);
+     })
+
     }
 }
 

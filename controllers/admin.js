@@ -2,6 +2,8 @@ const User = require("../models/User");
 const Quiz = require("../models/Quiz");
 const Question = require("../models/Question");
 const Option = require("../models/Option");
+const bcrypt = require('bcryptjs');
+const { error } = require("jquery");
 
 exports.addUserPage = (req, res, next) => {
     res.render('./admin/add-user.ejs', {pageTitle: 'Add User', path: req.path });
@@ -16,12 +18,23 @@ exports.saveUser = (req, res, next) => {
     const phone = req.body.phone;
     const password = req.body.password;
     const score = 0;
-    const user = new User(firstname, lastname, age, qualification, email, phone, password, score);
-    user.save().then(result => {
-        res.redirect("/admin/users");
+
+    User.findByEmail(email).then(user => {
+        if(user){
+            redirect("/admin/add-user")
+        }
+        return bcrypt.hash(password, 12).then(encrptedPassword => {
+            const newUser = new User(firstname, lastname, age, qualification, email, phone, encrptedPassword, score);
+            newUser.save().then(result => {
+                res.redirect("/admin/users");
+            }).catch(error => {
+                console.log(error);
+            })
+        });
     }).catch(error => {
         console.log(error);
     })
+    
 }
 
 exports.usersPage = (req, res, next) => {
@@ -54,12 +67,16 @@ exports.updateUser = (req, res, next) => {
     const score = req.body.score;
     const userId = req.body.userid;
 
-    const user = new User(firstname, lastname, age, qualification, email, phone, password, score);
-    return user.update(userId).then(result => {
-        res.redirect("/admin/users");
-    }).catch(error => {
-        console.log(error);
+    return bcrypt.hash(password, 12).then(hashedPassword => {
+        const user = new User(firstname, lastname, age, qualification, email, phone, hashedPassword, score);
+        return user.update(userId).then(result => {
+            res.redirect("/admin/users");
+        }).catch(error => {
+            console.log(error);
+        })
     })
+
+    
 }
 
 exports.deleteUser = (req, res, next) => {
@@ -176,18 +193,6 @@ exports.saveOption = (req, res, next) => {
     const questionId = req.body.questionId;
     const iscorrect = req.body.iscorrect;
     const quizId = req.body.quizId;
-
-    /*
-    const optionObj = new Option(option, questionId, iscorrect);
-
-
-
-    optionObj.save().then(result => {
-        res.redirect("/admin/quiz/" + quizId);
-    }).catch(error => {
-        console.log(error);
-    })
-    */
 
     Question.addOption(questionId, option, iscorrect).then(result => {
         res.redirect("/admin/quiz/" + quizId);

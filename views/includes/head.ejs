@@ -28,8 +28,13 @@
           </ul>
     
           <div class="col-md-3 text-end">
-            <a href="/login" href="/login" class="btn btn-outline-primary me-2">Login</a>
-            <a href="/signup" class="btn btn-primary">Sign-up</a>
+            <% if(!isAuthenticated) { %>
+              <a href="/login" class="btn btn-outline-primary me-2">Login</a>
+              <a href="/signup" class="btn btn-primary">Sign-up</a>
+            <% } else {  %>
+              <a href="/logout" class="btn btn-outline-primary me-2">Logout</a>
+            <% } %>
+            
           </div>
         </header>
       </div>
