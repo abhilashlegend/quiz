@@ -58,7 +58,7 @@ exports.signin = (req, res, next) => {
                 req.session.user = user;
                 return req.session.save(err => {
                     console.log(err);
-                    res.redirect("/");
+                    res.redirect("/quizzes");
                 })
             }
             return res.redirect("/login");
@@ -107,8 +107,8 @@ exports.quizPage = (req, res, next) => {
             prevQno = questionno - 1;
             currentQno = currentQno--;
         }
-        
-        res.render("quiz", {pageTitle: "Quiz", question: questionsList[questionno], currentQno: currentQno, nextQIndex: nextQno, prevQIndex: prevQno, quizid: quizid, isAuthenticated: req.session.isLogin});
+        let checkLogin = req.session.isLogin || false;
+        res.render("quiz", {pageTitle: "Quiz", question: questionsList[questionno], currentQno: currentQno, nextQIndex: nextQno, prevQIndex: prevQno, quizid: quizid, isAuthenticated: checkLogin});
     }).catch(error => {
         console.log(error);
     });
