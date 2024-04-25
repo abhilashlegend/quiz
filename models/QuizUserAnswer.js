@@ -19,6 +19,15 @@ class QuizUserAnswer {
         })
     }
 
+    fetchByUser(userId) {
+        const db = getDb();
+        return db.collection('quizuseranswer').find({user_id: new mongodb.ObjectId(userId)}).toArray().then(userQuizAnswers => {
+            return userQuizAnswers;
+        }).catch(err => {
+            console.log(err);
+        })
+    }
+
 }
 
 module.exports = QuizUserAnswer;

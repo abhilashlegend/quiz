@@ -4,6 +4,8 @@ const router = express.Router();
 
 const quizController = require('../controllers/quiz');
 
+const isAuth = require('../middleware/is-auth');
+
 router.get('/', quizController.home);
 
 router.get("/login", quizController.loginPage);
@@ -16,10 +18,10 @@ router.post("/register", quizController.signup);
 
 router.post("/login", quizController.signin);
 
-router.get("/quizzes", quizController.quizzesPage);
+router.get("/quizzes", isAuth, quizController.quizzesPage);
 
-router.get("/quiz/:quizid", quizController.quizPage);
+router.get("/quiz/:quizid", isAuth, quizController.quizPage);
 
-router.post("/quiz/:quizid", quizController.saveAnswer);
+router.post("/quiz/:quizid", isAuth, quizController.saveAnswer);
 
 module.exports = router;

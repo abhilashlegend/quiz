@@ -4,17 +4,18 @@ const bcrypt = require('bcryptjs');
 const session = require('express-session');
 const Quiz = require('../models/Quiz');
 const Question = require('../models/Question');
+const QuizUserAnswer = require('../models/QuizUserAnswer');
 
 exports.home = (req, res, next) => {
-    res.render("index.ejs", {pageTitle: "Home", isAuthenticated: req.session.isLogin });
+    res.render("index.ejs", {pageTitle: "Home" });
 }
 
 exports.loginPage = (req, res, next) => {
-    res.render("login.ejs", {pageTitle: "Login" , isAuthenticated: req.session.isLogin })
+    res.render("login.ejs", {pageTitle: "Login", errorMsg: req.flash('error'), successMsg: req.flash('success') })
 }
 
 exports.signupPage = (req, res, next) => {
-    res.render("signup.ejs", { pageTitle: "Signup", isAuthenticated: req.session.isLogin })
+    res.render("signup.ejs", { pageTitle: "Signup", errorMsg: req.flash('error')  })
 }
 
 exports.signup = (req, res, next) => {
@@ -29,18 +30,20 @@ exports.signup = (req, res, next) => {
 
     User.findByEmail(email).then(user => {
         if(user){
+            req.flash('error', 'User with the email already exists!');
             res.redirect("/signup");
         } 
         return bcrypt.hash(password, 12).then(encrptedPassword => {
             const newUser = new User(firstname, lastname, age, qualification, email, phone, encrptedPassword, score);
             newUser.save().then(result => {
+                req.flash('success','Registration successfull, please login.')
                 res.redirect("/login");
             }).catch(error => {
-                console.error(error);
+                console.error("Signup Error: " + error);
             });
         })      
     }).catch(error => {
-        console.log(error);
+        console.log("Signup Error: " + error);
     })   
 }
 
@@ -50,6 +53,7 @@ exports.signin = (req, res, next) => {
 
     User.findByEmail(email).then(user => {
         if(!user){
+            req.flash('error','Invalid email, please check!')
             return res.redirect("/login");
         }
         bcrypt.compare(password, user.password).then(isMatch => {
@@ -57,16 +61,27 @@ exports.signin = (req, res, next) => {
                 req.session.isLogin = true;
                 req.session.user = user;
                 return req.session.save(err => {
-                    console.log(err);
+                    if(err){
+                        console.log(err);
+                    } else {
+                        req.flash('success', "Login success!");
+                        console.log("Login success!");
+                    }
+                    
                     res.redirect("/quizzes");
                 })
+            } else {
+                req.flash('error',"Invalid Password!")
+                return res.redirect("/login");
             }
-            return res.redirect("/login");
+            
         }).catch(error => {
             console.log(error);
+            res.flash('error', error);
             res.redirect("/login");
         })
     }).catch(error => {
+        res.flash('error', error);
         console.log(error);
         res.redirect("/login");
     })
@@ -74,14 +89,19 @@ exports.signin = (req, res, next) => {
 
 exports.logout = (req, res, next) => {
     req.session.destroy(err => {
-        console.log(err);
+        if(err){
+            console.log("Logout Error:" + err)
+        } else {
+            console.log("Logout successful");
+        }
+        
         res.redirect("/");
     })
 }
 
 exports.quizzesPage = (req, res, next) => {
     Quiz.fetchAll().then(quizzes => {
-        res.render("quizzes.ejs", {pageTitle: "Quizzes", quizzes: quizzes, isAuthenticated: req.session.isLogin })
+        res.render("quizzes.ejs", {pageTitle: "Quizzes", quizzes: quizzes, successMsg: req.flash('success')  })
     }).catch(error => {
         console.log(error);
     })
@@ -108,16 +128,34 @@ exports.quizPage = (req, res, next) => {
             currentQno = currentQno--;
         }
         let checkLogin = req.session.isLogin || false;
-        res.render("quiz", {pageTitle: "Quiz", question: questionsList[questionno], currentQno: currentQno, nextQIndex: nextQno, prevQIndex: prevQno, quizid: quizid, isAuthenticated: checkLogin});
+        res.render("quiz", {pageTitle: "Quiz", question: questionsList[questionno], currentQno: currentQno, nextQIndex: nextQno, prevQIndex: prevQno, quizid: quizid});
     }).catch(error => {
         console.log(error);
     });
 }
 
-exports.saveAnswer = (req, res, next) => {
-    quizId = req.params.quizid;
-    questionId = req.body.questionId;
-    optionId = req.body.optionId;
-    //userId = req.session.user._id;
+exports.saveAnswer = (req, res, next) => { 
 
+    const quizId = req.params.quizid;
+    const questionId = req.body.questionId;
+    const optionId = req.body.optionId;
+    const userId = req.session.user._id;
+    const qno = req.query.qno;
+
+    const questions = Question.fetchAll(quizId).then(result => {
+        console.log(result.length);
+
+        if(qno < result.length){
+            let nextqno = parseInt(qno) + 1;   
+            nextUrl = "/quiz/" + quizId + "?qno=" + nextqno; 
+        } else {
+            let nextqno = parseInt(qno);   
+            nextUrl = "/quiz/" + quizId + "?qno=" + nextqno;
+        }
+        const userQuizAnswer = new QuizUserAnswer(quizId, questionId, optionId, userId);
+        userQuizAnswer.save();
+        res.redirect(nextUrl);
+    }).catch(err => {
+        console.log(err);
+    })
 }
