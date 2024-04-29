@@ -6,10 +6,11 @@ const Quiz = require('../models/Quiz');
 const Question = require('../models/Question');
 const QuizUserAnswer = require('../models/QuizUserAnswer');
 const brevo = require('sib-api-v3-sdk');
+const brevoAPIKey = require('../secret');
 let defaultClient = brevo.ApiClient.instance;
 
 let apiKey = defaultClient.authentications['api-key'];
-apiKey.apiKey = '';
+apiKey.apiKey = brevoAPIKey
 
 let apiInstance = new brevo.TransactionalEmailsApi();
 let sendSmtpEmail = new brevo.SendSmtpEmail();
