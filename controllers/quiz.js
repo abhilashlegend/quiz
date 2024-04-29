@@ -5,6 +5,14 @@ const session = require('express-session');
 const Quiz = require('../models/Quiz');
 const Question = require('../models/Question');
 const QuizUserAnswer = require('../models/QuizUserAnswer');
+const brevo = require('sib-api-v3-sdk');
+let defaultClient = brevo.ApiClient.instance;
+
+let apiKey = defaultClient.authentications['api-key'];
+apiKey.apiKey = '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';
+
+let apiInstance = new brevo.TransactionalEmailsApi();
+let sendSmtpEmail = new brevo.SendSmtpEmail();
 
 exports.home = (req, res, next) => {
     res.render("index.ejs", {pageTitle: "Home" });
@@ -36,7 +44,26 @@ exports.signup = (req, res, next) => {
         return bcrypt.hash(password, 12).then(encrptedPassword => {
             const newUser = new User(firstname, lastname, age, qualification, email, phone, encrptedPassword, score);
             newUser.save().then(result => {
-                req.flash('success','Registration successfull, please login.')
+
+                // Send email
+                sendSmtpEmail.subject = "Signup Successfull!";
+                sendSmtpEmail.htmlContent = "<html><body><h1>You have successfully signed up!</h1></body></html>";
+                sendSmtpEmail.sender = { "name": "Quiz", "email": "abhilashn2008@gmail.com" };
+                sendSmtpEmail.to = [
+                { "email": email, "name": firstname + ' ' + lastname }
+                ];
+                sendSmtpEmail.replyTo = { "email": "abhilashn2008@gmail.com", "name": "abhilash" };
+               /* sendSmtpEmail.headers = { "Some-Custom-Name": "unique-id-1234" };
+                sendSmtpEmail.params = { "parameter": "My param value", "subject": "common subject" }; */
+
+
+                apiInstance.sendTransacEmail(sendSmtpEmail).then(function (data) {
+                console.log('API called successfully. Returned data: ' + JSON.stringify(data));
+                }, function (error) {
+                console.error(error);
+                });
+
+                req.flash('success','Registration successfull, please login.');
                 res.redirect("/login");
             }).catch(error => {
                 console.error("Signup Error: " + error);
