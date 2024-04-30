@@ -27,6 +27,10 @@ exports.signupPage = (req, res, next) => {
     res.render("signup.ejs", { pageTitle: "Signup", errorMsg: req.flash('error')  })
 }
 
+exports.forgotPasswordPage = (req, res, next) => {
+    res.render("forgot-password.ejs", { pageTitle: "Forgot Password", errorMsg: req.flash('error'), successMsg: req.flash('success') })
+}
+
 exports.signup = (req, res, next) => {
     const firstname = req.body.firstname;
     const lastname = req.body.lastname;
