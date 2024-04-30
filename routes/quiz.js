@@ -26,4 +26,6 @@ router.post("/quiz/:quizid", isAuth, quizController.saveAnswer);
 
 router.get("/forgot-password", quizController.forgotPasswordPage);
 
+router.post("/reset", quizController.reset)
+
 module.exports = router;

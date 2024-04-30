@@ -3,7 +3,7 @@ const { error } = require('jquery');
 const mongodb = require('mongodb');
 
 class User {
-    constructor(firstname, lastname, age, qualification, email, phone, password, score){
+    constructor(firstname, lastname, age, qualification, email, phone, password, score, resetToken, resetTokenExpiration){
         this.firstname = firstname;
         this.lastname = lastname;
         this.age = age;
@@ -12,6 +12,8 @@ class User {
         this.phone = phone;
         this.password = password;
         this.score = score;
+        this.resetToken = resetToken;
+        this.resetTokenExpiration = resetTokenExpiration;
     }
 
     save() {
@@ -35,6 +37,11 @@ class User {
     update(userId) {
         const db = getDb();
         return db.collection('users').updateOne({_id: new mongodb.ObjectId(userId)}, { $set: this });
+    }
+
+    static updateToken(email, token, tokenexpiry) {
+        const db = getDb();
+        return db.collection('users').updateOne({email: email}, {$set: { resetToken: token, resetTokenExpiration: tokenexpiry }});
     }
 
     static findById(userId){

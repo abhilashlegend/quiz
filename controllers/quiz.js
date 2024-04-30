@@ -8,9 +8,10 @@ const QuizUserAnswer = require('../models/QuizUserAnswer');
 const brevo = require('sib-api-v3-sdk');
 const brevoAPIKey = require('../secret');
 let defaultClient = brevo.ApiClient.instance;
+const crypto = require('crypto');
 
 let apiKey = defaultClient.authentications['api-key'];
-apiKey.apiKey = brevoAPIKey
+apiKey.apiKey = brevoAPIKey;
 
 let apiInstance = new brevo.TransactionalEmailsApi();
 let sendSmtpEmail = new brevo.SendSmtpEmail();
@@ -116,6 +117,56 @@ exports.signin = (req, res, next) => {
         res.flash('error', error);
         console.log(error);
         res.redirect("/login");
+    })
+}
+
+exports.reset = (req, res, next) => {
+    const email = req.body.email;
+    User.findByEmail(email).then(user => {
+        if(!user){
+            req.flash('error', 'User with that email address not found!');
+            res.redirect("/forgot-password");
+        } else {
+            crypto.randomBytes(32, (err, buffer) => {
+                if(err){
+                    console.log(err)
+                    req.flash('error', err);
+                    res.redirect("/forgot-password");
+                }
+                const token = buffer.toString('hex');
+                const tokenExpiration = new Date() + 3600000;
+                return User.updateToken(email, token, tokenExpiration).then(result => {
+                    // Send email
+                sendSmtpEmail.subject = "Password Reset";
+                sendSmtpEmail.htmlContent = `
+                    <h1>You requested a password reset</h1>
+                    <p>Click this <a href="http://localhost:3000/reset/${token}">link</a> to set a new password</p>
+                `;
+                sendSmtpEmail.sender = { "name": "Quiz", "email": "abhilashn2008@gmail.com" };
+                sendSmtpEmail.to = [
+                { "email": email, "name": user.firstname }
+                ];
+                sendSmtpEmail.replyTo = { "email": "abhilashn2008@gmail.com", "name": "abhilash" };
+               /* sendSmtpEmail.headers = { "Some-Custom-Name": "unique-id-1234" };
+                sendSmtpEmail.params = { "parameter": "My param value", "subject": "common subject" }; */
+
+
+                apiInstance.sendTransacEmail(sendSmtpEmail).then(function (data) {
+                console.log('API called successfully. Returned data: ' + JSON.stringify(data));
+                }, function (error) {
+                console.error(error);
+                });
+
+                req.flash('success','Password Reset successfull, please login.');
+                res.redirect("/");
+         
+                }).catch(error => {
+                    console.log(error);
+                })
+            })
+        }
+    }).catch(error => {
+        console.log(error);
     })
 }
 
