@@ -134,7 +134,7 @@ exports.reset = (req, res, next) => {
                     res.redirect("/forgot-password");
                 }
                 const token = buffer.toString('hex');
-                const tokenExpiration = new Date() + 3600000;
+                const tokenExpiration =  Date.now() + 3600000;
                 return User.updateToken(email, token, tokenExpiration).then(result => {
                     // Send email
                 sendSmtpEmail.subject = "Password Reset";
@@ -157,7 +157,7 @@ exports.reset = (req, res, next) => {
                 console.error(error);
                 });
 
-                req.flash('success','Password Reset successfull, please login.');
+                req.flash('success','Please check your mail for password reset.');
                 res.redirect("/");
          
                 }).catch(error => {
@@ -169,6 +169,47 @@ exports.reset = (req, res, next) => {
         console.log(error);
     })
 }
+
+exports.newPasswordPage = (req, res, next) => {
+    const token = req.params.token;
+
+    User.findUserByToken(token).then(user => {
+        if(user){
+            res.render("new-password.ejs", { pageTitle: "New Password", user: user })
+        } else {
+            req.flash('error','Token has expired');
+            res.redirect("/forgot-password");
+        }
+    }).catch(error => {
+        console.log(error);
+    })
+}
+
+exports.updateNewPassword = (req, res, next) => {
+    const token = req.params.token;
+    const newPassword = req.body.newpassword;
+    const userId = req.body.userId;
+
+    User.findUserByIdAndToken(userId, token).then(user => {
+        if(user){
+            return bcrypt.hash(newPassword, 12).then(hashedPassword => {
+                User.updatePasswordByUserId(userId, hashedPassword).then(result => {
+                    req.flash('success','Password successfully reset');
+                    res.redirect("/login");
+                })
+            }).catch(error => {
+                console.log(error);
+            })
+        } else {
+            req.flash('error','Something went wrong! Please try again!');
+            res.redirect("/forgot-password");
+        }
+    }).catch(error => {
+        console.log(error);
+    })
+
+}
+
 
 exports.logout = (req, res, next) => {
     req.session.destroy(err => {

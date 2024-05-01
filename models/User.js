@@ -59,6 +59,29 @@ class User {
             return user;
         }).catch(error => {
             console.log(error);
+        });
+    }
+
+    static updatePasswordByUserId(userId, newPassword){
+        const db = getDb();
+        return db.collection('users').updateOne({_id: new mongodb.ObjectId(userId) }, {$set: { password: newPassword, resetToken: undefined, resetTokenExpiration: undefined }});
+    }
+
+    static findUserByToken(token) {
+        const db = getDb();
+        return db.collection('users').findOne({ resetToken: token, resetTokenExpiration:  { $gt: Date.now() }}).then(user => {
+            return user;
+        }).catch(error => {
+            console.log(error);
+        });
+    }
+
+    static findUserByIdAndToken(userId, token) {
+        const db = getDb();
+        return db.collection('users').findOne({ _id: new mongodb.ObjectId(userId), resetToken: token, resetTokenExpiration: { $gt: Date.now() }}).then(user => {
+            return user;
+        }).catch(error => {
+            console.log(error);
         })
     }
 
