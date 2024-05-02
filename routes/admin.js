@@ -4,6 +4,8 @@ const router = express.Router();
 
 const adminController = require('../controllers/admin');
 
+router.get('/dashboard', adminController.dashboardPage);
+
 router.get('/add-user', adminController.addUserPage);
 
 router.post('/add-user', adminController.saveUser);

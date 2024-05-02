@@ -5,6 +5,10 @@ const Option = require("../models/Option");
 const bcrypt = require('bcryptjs');
 const { error } = require("jquery");
 
+exports.dashboardPage = (req, res, next) => {
+    res.render('./admin/dashboard.ejs', { pageTitle: 'Admin Dashboard', path: req.path });
+}
+
 exports.addUserPage = (req, res, next) => {
     res.render('./admin/add-user.ejs', {pageTitle: 'Add User', path: req.path });
 }
@@ -13,18 +17,21 @@ exports.saveUser = (req, res, next) => {
     const firstname = req.body.firstname;
     const lastname = req.body.lastname;
     const age = req.body.age;
+    const role = req.body.role;
     const qualification = req.body.qualification;
     const email = req.body.email;
     const phone = req.body.phone;
     const password = req.body.password;
     const score = 0;
+    const resetToken = undefined;
+    const tokenExpiration = undefined;
 
     User.findByEmail(email).then(user => {
         if(user){
             redirect("/admin/add-user")
         }
         return bcrypt.hash(password, 12).then(encrptedPassword => {
-            const newUser = new User(firstname, lastname, age, qualification, email, phone, encrptedPassword, score);
+            const newUser = new User(firstname, lastname, age, role, qualification, email, phone, encrptedPassword, score, resetToken, tokenExpiration);
             newUser.save().then(result => {
                 res.redirect("/admin/users");
             }).catch(error => {
@@ -56,26 +63,41 @@ exports.editUserPage = (req, res, next) => {
     })
 }
 
-exports.updateUser = (req, res, next) => {
+exports.updateUser = async (req, res, next) => {
     const firstname = req.body.firstname;
     const lastname = req.body.lastname;
     const age = req.body.age;
+    const role = req.body.role;
     const qualification = req.body.qualification;
     const email = req.body.email;
     const phone = req.body.phone;
     const password = req.body.password;
     const score = req.body.score;
+    const resetToken = undefined;
+    const tokenExpiration = undefined;
     const userId = req.body.userid;
 
-    return bcrypt.hash(password, 12).then(hashedPassword => {
-        const user = new User(firstname, lastname, age, qualification, email, phone, hashedPassword, score);
-        return user.update(userId).then(result => {
+    const existingUser = await User.findById(userId).then(user => {
+        return user;
+    }).catch(err => {
+        console.log(err);
+        return null;
+    });
+
+    let newPasswordHash = existingUser.password;
+
+    
+
+    if(existingUser.password !== password){
+        newPasswordHash = await bcrypt.hash(password, 12);
+    }
+
+    const user = new User(firstname, lastname, age, role, qualification, email, phone, newPasswordHash, score, resetToken, tokenExpiration);
+        return await user.update(userId).then(result => {
             res.redirect("/admin/users");
         }).catch(error => {
             console.log(error);
         })
-    })
-
     
 }
 

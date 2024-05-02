@@ -3,10 +3,11 @@ const { error } = require('jquery');
 const mongodb = require('mongodb');
 
 class User {
-    constructor(firstname, lastname, age, qualification, email, phone, password, score, resetToken, resetTokenExpiration){
+    constructor(firstname, lastname, age, role, qualification, email, phone, password, score, resetToken, resetTokenExpiration){
         this.firstname = firstname;
         this.lastname = lastname;
         this.age = age;
+        this.role = role;
         this.qualification = qualification;
         this.email = email;
         this.phone = phone;
