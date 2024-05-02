@@ -103,8 +103,16 @@ exports.signin = (req, res, next) => {
                         req.flash('success', "Login success!");
                         console.log("Login success!");
                     }
+                    if(user.role == 'subscriber'){
+                        res.redirect("/quizzes");
+                    } else if(user.role == 'creator') { 
+                        res.redirect("/admin/quizzes");
+                    } else if(user.role == 'admin'){
+                        res.redirect("/admin/dashboard");
+                    } else {
+                        res.redirect("/quizzes");
+                    }
                     
-                    res.redirect("/quizzes");
                 })
             } else {
                 req.flash('error',"Invalid Password!")

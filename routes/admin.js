@@ -1,49 +1,50 @@
 const express = require('express');
-
+const adminAuth = require('../middleware/adminAuth');
+const creatorAuth = require('../middleware/creatorAuth');
 const router = express.Router();
 
 const adminController = require('../controllers/admin');
 
-router.get('/dashboard', adminController.dashboardPage);
+router.get('/dashboard', adminAuth, adminController.dashboardPage);
 
-router.get('/add-user', adminController.addUserPage);
+router.get('/add-user', adminAuth, adminController.addUserPage);
 
-router.post('/add-user', adminController.saveUser);
+router.post('/add-user', adminAuth, adminController.saveUser);
 
-router.get('/edit-user/:userId', adminController.editUserPage);
+router.get('/edit-user/:userId', adminAuth, adminController.editUserPage);
 
-router.post('/edit-user', adminController.updateUser);
+router.post('/edit-user', adminAuth, adminController.updateUser);
 
-router.get("/users", adminController.usersPage);
+router.get("/users", adminAuth, adminController.usersPage);
 
-router.get('/delete-user/:userId', adminController.deleteUser);
+router.get('/delete-user/:userId', adminAuth, adminController.deleteUser);
 
-router.get("/quizzes", adminController.quizPage);
+router.get("/quizzes", creatorAuth, adminController.quizPage);
 
-router.get("/add-quiz", adminController.addQuizPage);
+router.get("/add-quiz", creatorAuth, adminController.addQuizPage);
 
-router.post("/add-quiz", adminController.addQuiz);
+router.post("/add-quiz", creatorAuth, adminController.addQuiz);
 
-router.get("/edit-quiz/:quizId", adminController.editQuizPage);
+router.get("/edit-quiz/:quizId", creatorAuth, adminController.editQuizPage);
 
-router.post("/edit-quiz", adminController.updateQuiz);
+router.post("/edit-quiz", creatorAuth, adminController.updateQuiz);
 
-router.get("/delete-quiz/:quizId", adminController.deleteQuiz);
+router.get("/delete-quiz/:quizId", creatorAuth, adminController.deleteQuiz);
 
-router.get("/quiz/:quizId", adminController.questionsPage);
+router.get("/quiz/:quizId", creatorAuth, adminController.questionsPage);
 
-router.get("/quiz/add-question/:quizId", adminController.addQuestionPage);
+router.get("/quiz/add-question/:quizId", creatorAuth, adminController.addQuestionPage);
 
-router.post("/quiz/add-question", adminController.saveQuestion);
+router.post("/quiz/add-question", creatorAuth, adminController.saveQuestion);
 
-router.post("/quiz/edit-question", adminController.updateQuestion);
+router.post("/quiz/edit-question", creatorAuth, adminController.updateQuestion);
 
-router.get("/quiz/edit-question/:qId", adminController.editQuestionPage);
+router.get("/quiz/edit-question/:qId", creatorAuth, adminController.editQuestionPage);
 
-router.get("/quiz/delete-question/:questionId", adminController.deleteQuestion);
+router.get("/quiz/delete-question/:questionId", creatorAuth, adminController.deleteQuestion);
 
-router.post("/quiz/add-option", adminController.saveOption);
+router.post("/quiz/add-option", creatorAuth, adminController.saveOption);
 
-router.get("/quiz/delete-option/:optionId", adminController.deleteOption);
+router.get("/quiz/delete-option/:optionId", creatorAuth, adminController.deleteOption);
 
 module.exports = router;
