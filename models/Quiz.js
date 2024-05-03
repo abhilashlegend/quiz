@@ -2,8 +2,9 @@ const getDb = require('../util/database').getDb;
 const mongodb = require('mongodb');
 
 class Quiz {
-    constructor(title){
+    constructor(title, userId){
         this.title = title;
+        this.userId = userId;
     }
 
     save() {
@@ -18,6 +19,15 @@ class Quiz {
         }).catch(error => {
             console.log(error);
         })
+    }
+
+    static fetchByUser(userId) {
+        const db = getDb();
+        return db.collection('quizzes').find({userId: userId}).toArray().then(quizzes => {
+            return quizzes;
+        }).catch(error => {
+            console.log(error);
+        });
     }
 
     static getById(quizId){

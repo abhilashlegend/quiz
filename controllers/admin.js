@@ -115,17 +115,27 @@ exports.addQuizPage = (req, res, next) => {
 }
 
 exports.quizPage = (req, res, next) => {
-   
-    Quiz.fetchAll().then(quizzes => {
-        res.render("./admin/quizzes.ejs", { pageTitle: "Quizzes", path: req.path,  quizzes });
-    }).catch(error => {
-        console.log(error);
-    })    
+
+    if(req.session.user.role == 'admin'){
+        Quiz.fetchAll().then(quizzes => {
+            res.render("./admin/quizzes.ejs", { pageTitle: "Quizzes", path: req.path,  quizzes });
+        }).catch(error => {
+            console.log(error);
+        });
+    } else if(req.session.user.role == 'creator'){
+        Quiz.fetchByUser(req.session.user._id).then(quizzes => {
+            res.render("./admin/quizzes.ejs", { pageTitle: "Quizzes", path: req.path,  quizzes });
+        }).catch(error => {
+            console.log(error);
+        })
+    }
+        
 }
 
 exports.addQuiz = (req, res, next) => {
     const title = req.body.title;
-    const quiz = new Quiz(title);
+    const userId = req.session.user._id;
+    const quiz = new Quiz(title, userId);
     quiz.save().then(result => {
         res.redirect("/admin/quizzes");
     }).catch(error => {
@@ -144,7 +154,8 @@ exports.editQuizPage = (req, res, next) => {
 exports.updateQuiz = (req, res, next) => {
     const title = req.body.title;
     const quizId = req.body.quizid;
-    const quiz = new Quiz(title);
+    const userId = req.session.user._id;
+    const quiz = new Quiz(title, userId);
     quiz.update(quizId).then(result => {
         res.redirect("/admin/quizzes");
     }).catch(error => {
