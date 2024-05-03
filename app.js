@@ -39,6 +39,7 @@ app.set('views', path.join(__dirname, 'views'));
 
 app.use((req, res, next) => {
     res.locals.isAuthenticated = req.session.isLogin || false;
+    res.locals.isAdmin = req.session.user.role == 'admin';
     //    res.locals.csrfToken = req.csrfToken();
     next();
   });
