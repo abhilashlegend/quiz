@@ -145,7 +145,12 @@ exports.addQuiz = (req, res, next) => {
 
 exports.editQuizPage = (req, res, next) => {
     Quiz.getById(req.params.quizId).then(quiz => {
-        res.render("./admin/edit-quiz.ejs", {pageTitle: "Edit Quiz", path: req.path, quiz })
+        if(req.session.user.role == 'admin' || req.session.user._id.toString() == quiz.userId.toString()){
+            res.render("./admin/edit-quiz.ejs", {pageTitle: "Edit Quiz", path: req.path, quiz })
+        } else {
+            res.redirect("/admin/quizzes");
+        }
+        
     }).catch(error => {
         console.log(error);
     })
@@ -165,6 +170,7 @@ exports.updateQuiz = (req, res, next) => {
 
 exports.deleteQuiz = (req, res, next) => {
     Quiz.delete(req.params.quizId).then(result => {
+        console.log(result);
         res.redirect("/admin/quizzes");
     }).catch(error => {
         console.log(error);
@@ -174,12 +180,22 @@ exports.deleteQuiz = (req, res, next) => {
 exports.questionsPage = (req, res, next) => {
     let quizQuestions = [];
     const quizId = req.params.quizId;
-    Question.fetchAll(quizId).then(questions => {
-        quizQuestions = questions;
-        res.render("./admin/questions.ejs", { pageTitle: "Quiz Questions", path: req.path, questions: quizQuestions, quizId: req.params.quizId });
-    }).catch(error => {
-        console.log(error);
-    })
+    if(req.session.user.role == 'admin'){
+        Question.fetchAll(quizId).then(questions => {
+            quizQuestions = questions;
+            res.render("./admin/questions.ejs", { pageTitle: "Quiz Questions", path: req.path, questions: quizQuestions, quizId: req.params.quizId });
+        }).catch(error => {
+            console.log(error);
+        })
+    } else if(req.session.user.role == 'creator'){
+        Question.fetchAllByUserId(quizId, req.session.user._id).then(questions => {
+            quizQuestions = questions;
+            res.render("./admin/questions.ejs", { pageTitle: "Quiz Questions", path: req.path, questions: quizQuestions, quizId: req.params.quizId });
+        }).catch(error => {
+            console.log(error);
+        })
+    }
+    
 }
 
 exports.addQuestionPage = (req, res, next) => {
@@ -189,8 +205,8 @@ exports.addQuestionPage = (req, res, next) => {
 exports.saveQuestion = (req, res, next) => {
     const title = req.body.title;
     const quizId = req.body.quizId;
-    
-    const question = new Question(title, quizId);
+    const userId = req.session.user._id;
+    const question = new Question(title, quizId, userId);
     question.save().then(result => {
         res.redirect("/admin/quiz/" + quizId);
     }).catch(error => {
@@ -239,5 +255,17 @@ exports.deleteOption = (req, res, next) => {
         res.redirect("/admin/quiz/" + req.query.quizid);
     }).catch(error => {
         console.log(error);
+    })
+}
+
+exports.logout = (req, res, next) => {
+    req.session.destroy(err => {
+        if(err){
+            console.log("Logout Error:" + err)
+        } else {
+            console.log("Logout successful");
+        }
+        
+        res.redirect("/");
     })
 }

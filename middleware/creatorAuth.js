@@ -1,5 +1,5 @@
 const creatorAuth = (req, res, next) => {
-
+    console.log(req);
     if(!req.session.isLogin){
         req.flash('error','You are not authorized to access that!');
         res.redirect('/login');

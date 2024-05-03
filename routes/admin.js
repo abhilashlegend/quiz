@@ -47,4 +47,6 @@ router.post("/quiz/add-option", creatorAuth, adminController.saveOption);
 
 router.get("/quiz/delete-option/:optionId", creatorAuth, adminController.deleteOption);
 
+router.get("/logout", creatorAuth, adminController.logout);
+
 module.exports = router;

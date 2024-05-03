@@ -6,10 +6,11 @@ class Question {
 
     options = [];
 
-    constructor(title, quizId){
+    constructor(title, quizId, userId){
         this.title = title;
         this.quizId = new mongodb.ObjectId(quizId);
         this.options = new Array();
+        this.userId = new mongodb.ObjectId(userId);
     }
 
     save(){
@@ -25,6 +26,17 @@ class Question {
             console.log(error);
         })
     }
+
+    static fetchAllByUserId(quizId, userId){
+        const db = getDb();
+        return db.collection('questions').find({quizId: new mongodb.ObjectId(quizId), userId: new mongodb.ObjectId(userId)}).toArray().then(questions => {
+            return questions;
+        }).catch(error => {
+            console.log(error);
+        })
+    }
+
+    
 
     static getById(qId){
         const db = getDb();
