@@ -9,6 +9,7 @@ const brevo = require('sib-api-v3-sdk');
 const brevoAPIKey = require('../secret');
 let defaultClient = brevo.ApiClient.instance;
 const crypto = require('crypto');
+const { query, matchedData, validationResult } = require('express-validator');
 
 let apiKey = defaultClient.authentications['api-key'];
 apiKey.apiKey = brevoAPIKey;
@@ -87,48 +88,55 @@ exports.signin = (req, res, next) => {
     const email = req.body.email;
     const password = req.body.password;
 
-    User.findByEmail(email).then(user => {
-        if(!user){
-            req.flash('error','Invalid email, please check!')
-            return res.redirect("/login");
-        }
-        bcrypt.compare(password, user.password).then(isMatch => {
-            if(isMatch){
-                req.session.isLogin = true;
-                req.session.user = user;
-                return req.session.save(err => {
-                    if(err){
-                        console.log(err);
-                    } else {
-                        req.flash('success', "Login success!");
-                        console.log("Login success!");
-                    }
-                    if(user.role == 'subscriber'){
-                        res.redirect("/quizzes");
-                    } else if(user.role == 'creator') { 
-                        res.redirect("/admin/quizzes");
-                    } else if(user.role == 'admin'){
-                        res.redirect("/admin/dashboard");
-                    } else {
-                        res.redirect("/quizzes");
-                    }
-                    
-                })
-            } else {
-                req.flash('error',"Invalid Password!")
+    const result = validationResult(req);
+
+    if(!result.isEmpty()){
+        req.flash('error',result.array()[0].msg);
+        res.redirect("/login");
+    } else {
+        User.findByEmail(email).then(user => {
+            if(!user){
+                req.flash('error','User with that email does not exist')
                 return res.redirect("/login");
             }
-            
+            bcrypt.compare(password, user.password).then(isMatch => {
+                if(isMatch){
+                    req.session.isLogin = true;
+                    req.session.user = user;
+                    return req.session.save(err => {
+                        if(err){
+                            console.log(err);
+                        } else {
+                            req.flash('success', "Login success!");
+                            console.log("Login success!");
+                        }
+                        if(user.role == 'subscriber'){
+                            res.redirect("/quizzes");
+                        } else if(user.role == 'creator') { 
+                            res.redirect("/admin/quizzes");
+                        } else if(user.role == 'admin'){
+                            res.redirect("/admin/dashboard");
+                        } else {
+                            res.redirect("/quizzes");
+                        }
+                        
+                    })
+                } else {
+                    req.flash('error',"Invalid Password!")
+                    return res.redirect("/login");
+                }
+                
+            }).catch(error => {
+                console.log(error);
+                res.flash('error', error);
+                res.redirect("/login");
+            })
         }).catch(error => {
+            req.flash('error', error);
             console.log(error);
-            res.flash('error', error);
             res.redirect("/login");
         })
-    }).catch(error => {
-        res.flash('error', error);
-        console.log(error);
-        res.redirect("/login");
-    })
+    }    
 }
 
 exports.reset = (req, res, next) => {
