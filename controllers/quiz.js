@@ -26,7 +26,7 @@ exports.loginPage = (req, res, next) => {
 }
 
 exports.signupPage = (req, res, next) => {
-    res.render("signup.ejs", { pageTitle: "Signup", errorMsg: req.flash('error')  })
+    res.render("signup.ejs", { pageTitle: "Signup", errorMsg: req.flash('error'), formErrors: req.flash('formerror'), formdata: req.body })
 }
 
 exports.forgotPasswordPage = (req, res, next) => {
@@ -46,9 +46,19 @@ exports.signup = (req, res, next) => {
     const resetToken = undefined;
     const tokenExpiration = undefined;
 
+    const formErrors = validationResult(req);
+
+        console.log(formErrors);
+
+    if(!formErrors.isEmpty()){
+        req.flash('formerror',formErrors.array());
+        return res.render("signup.ejs", { pageTitle: "Signup", errorMsg: req.flash('error'), formErrors: req.flash('formerror'), formdata: req.body })
+    }
+
     User.findByEmail(email).then(user => {
         if(user){
             req.flash('error', 'User with the email already exists!');
+            
             res.redirect("/signup");
         } 
         return bcrypt.hash(password, 12).then(encrptedPassword => {
