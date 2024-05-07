@@ -48,8 +48,6 @@ exports.signup = (req, res, next) => {
 
     const formErrors = validationResult(req);
 
-        console.log(formErrors);
-
     if(!formErrors.isEmpty()){
         req.flash('formerror',formErrors.array());
         return res.render("signup.ejs", { pageTitle: "Signup", errorMsg: req.flash('error'), formErrors: req.flash('formerror'), formdata: req.body })
@@ -96,10 +94,6 @@ exports.signin = (req, res, next) => {
         res.redirect("/login");
     } else {
         User.findByEmail(email).then(user => {
-            if(!user){
-                req.flash('error','User with that email does not exist')
-                return res.redirect("/login");
-            }
             bcrypt.compare(password, user.password).then(isMatch => {
                 if(isMatch){
                     req.session.isLogin = true;

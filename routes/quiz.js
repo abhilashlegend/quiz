@@ -43,7 +43,15 @@ router.post("/register",
 
     ], quizController.signup);
 
-router.post("/login", body('email').isEmail().withMessage("Entered email is not valid"), quizController.signin);
+router.post("/login", [
+    body('email').isEmail().withMessage("Entered email is not valid").custom((value, {req}) => {
+        return User.findByEmail(value).then(user => {
+            if(!user){
+                return Promise.reject("User with that email does not exists!")
+            }
+        })
+    })
+], quizController.signin);
 
 router.get("/quizzes", isAuth, quizController.quizzesPage);
 
