@@ -27,6 +27,8 @@
                 let phoneClass = ''
                 let passwordError = ''
                 let passwordClass = ''
+                let cpasswordError = ''
+                let cpasswordClass = ''
               %>
 
               <% for(let err of formErrors) {  %>
@@ -60,7 +62,10 @@
                     passwordClass = 'is-invalid'
                     passwordError = err.msg;
                   }
-
+                  if(err.path == 'cpassword'){
+                    cpasswordClass = 'is-invalid'
+                    cpasswordError = err.msg;
+                  }
                   
                 %>
               
@@ -109,11 +114,20 @@
                     <p class="invalid-feedback"><%= phoneError %></p>
                 </div>
 
+                <!-- Password -->
                 <div class="form-outline mb-4">
                   <label class="form-label" for="password">Password</label>
                   <input type="password" id="password" value="<%= formdata.password %>" name="password" class="form-control form-control-lg <%= passwordClass %>" />
                   <p class="invalid-feedback"><%= passwordError %></p>
                 </div>
+
+                <!-- Confirm Password -->
+                <div class="form-outline mb-4">
+                  <label class="form-label" for="cpassword">Confirm Password</label>
+                  <input type="password" id="cpassword" value="<%= formdata.cpassword %>" name="cpassword" class="form-control form-control-lg <%= cpasswordClass %>" />
+                  <p class="invalid-feedback"><%= cpasswordError %></p>
+                </div>
+
                 <!-- Submit button -->
                 <button type="submit" class="btn btn-primary btn-lg btn-block">Sign up</button>
       

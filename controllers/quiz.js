@@ -55,43 +55,34 @@ exports.signup = (req, res, next) => {
         return res.render("signup.ejs", { pageTitle: "Signup", errorMsg: req.flash('error'), formErrors: req.flash('formerror'), formdata: req.body })
     }
 
-    User.findByEmail(email).then(user => {
-        if(user){
-            req.flash('error', 'User with the email already exists!');
-            
-            res.redirect("/signup");
-        } 
-        return bcrypt.hash(password, 12).then(encrptedPassword => {
-            const newUser = new User(firstname, lastname, age, role, qualification, email, phone, encrptedPassword, score, resetToken, tokenExpiration);
-            newUser.save().then(result => {
+    bcrypt.hash(password, 12).then(encrptedPassword => {
+    const newUser = new User(firstname, lastname, age, role, qualification, email, phone, encrptedPassword, score, resetToken, tokenExpiration);
+    newUser.save().then(result => {
 
-                // Send email
-                sendSmtpEmail.subject = "Signup Successfull!";
-                sendSmtpEmail.htmlContent = "<html><body><h1>You have successfully signed up!</h1></body></html>";
-                sendSmtpEmail.sender = { "name": "Quiz", "email": "abhilashn2008@gmail.com" };
-                sendSmtpEmail.to = [
-                { "email": email, "name": firstname + ' ' + lastname }
-                ];
-                sendSmtpEmail.replyTo = { "email": "abhilashn2008@gmail.com", "name": "abhilash" };
-               /* sendSmtpEmail.headers = { "Some-Custom-Name": "unique-id-1234" };
-                sendSmtpEmail.params = { "parameter": "My param value", "subject": "common subject" }; */
+        // Send email
+        sendSmtpEmail.subject = "Signup Successfull!";
+        sendSmtpEmail.htmlContent = "<html><body><h1>You have successfully signed up!</h1></body></html>";
+        sendSmtpEmail.sender = { "name": "Quiz", "email": "abhilashn2008@gmail.com" };
+        sendSmtpEmail.to = [
+        { "email": email, "name": firstname + ' ' + lastname }
+        ];
+        sendSmtpEmail.replyTo = { "email": "abhilashn2008@gmail.com", "name": "abhilash" };
+        /* sendSmtpEmail.headers = { "Some-Custom-Name": "unique-id-1234" };
+        sendSmtpEmail.params = { "parameter": "My param value", "subject": "common subject" }; */
 
 
-                apiInstance.sendTransacEmail(sendSmtpEmail).then(function (data) {
-                console.log('API called successfully. Returned data: ' + JSON.stringify(data));
-                }, function (error) {
-                console.error(error);
-                });
+        apiInstance.sendTransacEmail(sendSmtpEmail).then(function (data) {
+        console.log('API called successfully. Returned data: ' + JSON.stringify(data));
+        }, function (error) {
+        console.error(error);
+        });
 
-                req.flash('success','Registration successfull, please login.');
-                res.redirect("/login");
-            }).catch(error => {
-                console.error("Signup Error: " + error);
-            });
-        })      
+        req.flash('success','Registration successfull, please login.');
+        res.redirect("/login");
     }).catch(error => {
-        console.log("Signup Error: " + error);
-    })   
+        console.error("Signup Error: " + error);
+    });
+}); 
 }
 
 exports.signin = (req, res, next) => {
