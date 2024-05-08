@@ -50,7 +50,7 @@ exports.signup = (req, res, next) => {
 
     if(!formErrors.isEmpty()){
         req.flash('formerror',formErrors.array());
-        return res.render("signup.ejs", { pageTitle: "Signup", errorMsg: req.flash('error'), formErrors: req.flash('formerror'), formdata: req.body })
+        return res.status(422).render("signup.ejs", { pageTitle: "Signup", errorMsg: req.flash('error'), formErrors: req.flash('formerror'), formdata: req.body })
     }
 
     bcrypt.hash(password, 12).then(encrptedPassword => {

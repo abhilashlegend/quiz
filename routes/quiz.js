@@ -31,7 +31,7 @@ router.post("/register",
                 }
                 return true;
             }) 
-        }),
+        }).normalizeEmail(),
         body('phone').trim().notEmpty().withMessage("Phone number is required").isNumeric().withMessage("Please enter correct phone number").isLength({min: 10}).withMessage("Please enter valid phone number"),
         body('password').trim().notEmpty().withMessage("Password is required").isLength({min: 5}).withMessage("Password must be minimum of 5 characters"),
         body('cpassword').custom((value, {req}) => {
@@ -39,7 +39,7 @@ router.post("/register",
                 throw new Error("Confirm Password does not match Password");
             }
             return true;
-        })        
+        }).trim()        
 
     ], quizController.signup);
 
@@ -50,7 +50,8 @@ router.post("/login", [
                 return Promise.reject("User with that email does not exists!")
             }
         })
-    })
+    }).normalizeEmail(),
+    body('password').trim()
 ], quizController.signin);
 
 router.get("/quizzes", isAuth, quizController.quizzesPage);
