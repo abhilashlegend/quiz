@@ -22,7 +22,7 @@ exports.home = (req, res, next) => {
 }
 
 exports.loginPage = (req, res, next) => {
-    res.render("login.ejs", {pageTitle: "Login", errorMsg: req.flash('error'), successMsg: req.flash('success') })
+    res.render("login.ejs", {pageTitle: "Login", errorMsg: req.flash('error'), successMsg: req.flash('success'), formdata: req.body })
 }
 
 exports.signupPage = (req, res, next) => {
@@ -91,7 +91,7 @@ exports.signin = (req, res, next) => {
 
     if(!result.isEmpty()){
         req.flash('error',result.array()[0].msg);
-        res.redirect("/login");
+        res.render("login.ejs", {pageTitle: "Login", errorMsg: req.flash('error'), successMsg: req.flash('success'), formdata: req.body })
     } else {
         User.findByEmail(email).then(user => {
             bcrypt.compare(password, user.password).then(isMatch => {
@@ -118,7 +118,7 @@ exports.signin = (req, res, next) => {
                     })
                 } else {
                     req.flash('error',"Invalid Password!")
-                    return res.redirect("/login");
+                    return res.render("login.ejs", {pageTitle: "Login", errorMsg: req.flash('error'), successMsg: req.flash('success'), formdata: req.body })
                 }
                 
             }).catch(error => {
