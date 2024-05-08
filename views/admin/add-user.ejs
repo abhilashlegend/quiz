@@ -7,20 +7,58 @@
         <div class="row">
             <div class="col-md-6 offset-md-3">
                 <h1>Add User</h1>
+
+                <%
+                
+                let firstnameError = ''
+                let lastnameError = ''
+                let ageError = ''
+                let qualificationError = ''
+                let emailError = ''
+                let phoneError = ''
+                let passwordError = ''
+                
+                for(let err of formErrors) {
+                    if(err.path === 'firstname'){
+                        firstnameError = err.msg
+                    }
+                    if(err.path === 'lastname'){
+                        lastnameError = err.msg
+                    }
+                    if(err.path === 'age'){
+                        ageError = err.msg
+                    }
+                    if(err.path === 'qualification'){
+                        qualificationError = err.msg
+                    }
+                    if(err.path === 'email'){
+                        emailError = err.msg
+                    }
+                    if(err.path === 'phone'){
+                        phoneError = err.msg
+                    }
+                    if(err.path === 'password'){
+                        passwordError = err.msg
+                    }
+                }
+                %>
                 <form method="post" action="/admin/add-user">
                     <div class="mb-3">
                         <label for="firstname" class="form-label">First Name</label>
-                        <input type="text" class="form-control" id="firstname" name="firstname" />
+                        <input type="text" class="form-control <%= formErrors.find(e => e.path === 'firstname') ? 'is-invalid' : '' %>" id="firstname" name="firstname" />
+                        <div class="invalid-feedback"><%= firstnameError %></div>
                     </div>
 
                     <div class="mb-3">
                         <label for="lastname" class="form-label">Last Name</label>
-                        <input type="text" class="form-control" id="lastname" name="lastname" />
+                        <input type="text" class="form-control <%= formErrors.find(e => e.path === 'lastname') ? 'is-invalid' : '' %>" id="lastname" name="lastname" />
+                        <div class="invalid-feedback"><%= lastnameError %></div>
                     </div>
 
                     <div class="mb-3">
                         <label for="age" class="form-label">Age</label>
-                        <input type="text" class="form-control" id="age" name="age" />
+                        <input type="text" class="form-control <%= formErrors.find(e => e.path === 'age') ? 'is-invalid' : '' %>" id="age" name="age" />
+                        <div class="invalid-feedback"><%= ageError %></div>
                     </div>
 
                     <div class="mb-3">
@@ -34,22 +72,26 @@
 
                     <div class="mb-3">
                         <label for="qualification" class="form-label">Qualification</label>
-                        <input type="text" class="form-control" id="qualification" name="qualification" />
+                        <input type="text" class="form-control <%= formErrors.find(e => e.path === 'qualification') ? 'is-invalid' : '' %>" id="qualification" name="qualification" />
+                        <div class="invalid-feedback"><%= qualificationError %></div>
                     </div>
 
                     <div class="mb-3">
                         <label for="email" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="email" name="email" />
+                        <input type="email" class="form-control <%= formErrors.find(e => e.path === 'email') ? 'is-invalid' : '' %>" id="email" name="email" />
+                        <div class="invalid-feedback"><%= emailError %></div>
                     </div>
 
                     <div class="mb-3">
                         <label for="phone" class="form-label">Phone</label>
-                        <input type="text" class="form-control" id="phone" name="phone" />
+                        <input type="text" class="form-control <%= formErrors.find(e => e.path === 'phone') ? 'is-invalid' : '' %>" id="phone" name="phone" />
+                        <div class="invalid-feedback"><%= phoneError %></div>
                     </div>
 
                     <div class="mb-3">
                         <label for="password" class="form-label">Password</label>
-                        <input type="password" class="form-control" id="password" name="password" />
+                        <input type="password" class="form-control <%= formErrors.find(e => e.path === 'password') ? 'is-invalid' : '' %>" id="password" name="password" />
+                        <div class="invalid-feedback"><%= passwordError %></div>
                     </div>
 
                     <div class="mb-3">

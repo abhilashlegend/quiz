@@ -4,13 +4,14 @@ const Question = require("../models/Question");
 const Option = require("../models/Option");
 const bcrypt = require('bcryptjs');
 const { error } = require("jquery");
+const { validationResult } = require('express-validator');
 
 exports.dashboardPage = (req, res, next) => {
     res.render('./admin/dashboard.ejs', { pageTitle: 'Admin Dashboard', path: req.path });
 }
 
 exports.addUserPage = (req, res, next) => {
-    res.render('./admin/add-user.ejs', {pageTitle: 'Add User', path: req.path });
+    res.render('./admin/add-user.ejs', {pageTitle: 'Add User', path: req.path, formErrors: Array() });
 }
 
 exports.saveUser = (req, res, next) => {
@@ -26,22 +27,27 @@ exports.saveUser = (req, res, next) => {
     const resetToken = undefined;
     const tokenExpiration = undefined;
 
-    User.findByEmail(email).then(user => {
-        if(user){
-            redirect("/admin/add-user")
-        }
-        return bcrypt.hash(password, 12).then(encrptedPassword => {
-            const newUser = new User(firstname, lastname, age, role, qualification, email, phone, encrptedPassword, score, resetToken, tokenExpiration);
-            newUser.save().then(result => {
-                res.redirect("/admin/users");
-            }).catch(error => {
-                console.log(error);
-            })
-        });
-    }).catch(error => {
-        console.log(error);
-    })
-    
+    const validationErrors = validationResult(req);
+
+    if(!validationErrors.isEmpty()){
+        return res.status(422).render('./admin/add-user.ejs', {pageTitle: 'Add User', path: req.path, formErrors: validationErrors.array() });
+    } else {
+        User.findByEmail(email).then(user => {
+            if(user){
+                redirect("/admin/add-user")
+            }
+            return bcrypt.hash(password, 12).then(encrptedPassword => {
+                const newUser = new User(firstname, lastname, age, role, qualification, email, phone, encrptedPassword, score, resetToken, tokenExpiration);
+                newUser.save().then(result => {
+                    res.redirect("/admin/users");
+                }).catch(error => {
+                    console.log(error);
+                })
+            });
+        }).catch(error => {
+            console.log(error);
+        })
+    }
 }
 
 exports.usersPage = (req, res, next) => {
