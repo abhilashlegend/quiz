@@ -30,7 +30,15 @@ router.post('/add-user', [
 
 router.get('/edit-user/:userId', adminAuth, adminController.editUserPage);
 
-router.post('/edit-user', adminAuth, adminController.updateUser);
+router.post('/edit-user', [
+    body('firstname').notEmpty().withMessage("First Name is required").isLength({min: 3}).withMessage("First Name should be minimum 3 characters"),
+    body('lastname').notEmpty().withMessage("Last Name is required").isLength({min: 3}).withMessage("Last Name should be atleast 3 characters"),
+    body('age').notEmpty().withMessage("Age is required").isNumeric().withMessage("Age must be numerical").isInt({min: 3, max: 100}).withMessage("Age must be greater than 3 or less than 100"),
+    body('qualification').notEmpty().withMessage("Qualification is required"),
+    body('email').isEmail().withMessage("Please enter valid email address").normalizeEmail(),
+    body('phone').isMobilePhone('en-IN').withMessage("Please enter valid Mobile Number"),
+    body('password').notEmpty().withMessage("Password is required").trim()
+], adminAuth, adminController.updateUser);
 
 router.get("/users", adminAuth, adminController.usersPage);
 

@@ -32,21 +32,14 @@ exports.saveUser = (req, res, next) => {
     if(!validationErrors.isEmpty()){
         return res.status(422).render('./admin/add-user.ejs', {pageTitle: 'Add User', path: req.path, formErrors: validationErrors.array() });
     } else {
-        User.findByEmail(email).then(user => {
-            if(user){
-                redirect("/admin/add-user")
-            }
-            return bcrypt.hash(password, 12).then(encrptedPassword => {
-                const newUser = new User(firstname, lastname, age, role, qualification, email, phone, encrptedPassword, score, resetToken, tokenExpiration);
-                newUser.save().then(result => {
-                    res.redirect("/admin/users");
-                }).catch(error => {
-                    console.log(error);
-                })
-            });
-        }).catch(error => {
-            console.log(error);
-        })
+        bcrypt.hash(password, 12).then(encrptedPassword => {
+            const newUser = new User(firstname, lastname, age, role, qualification, email, phone, encrptedPassword, score, resetToken, tokenExpiration);
+            newUser.save().then(result => {
+                res.redirect("/admin/users");
+            }).catch(error => {
+                console.log(error);
+            })
+        });
     }
 }
 
@@ -63,7 +56,7 @@ exports.usersPage = (req, res, next) => {
 
 exports.editUserPage = (req, res, next) => {
     User.findById(req.params.userId).then(user => {
-        res.render("./admin/edit-user.ejs", { pageTitle: "Edit User", user: user, path: req.path });
+        res.render("./admin/edit-user.ejs", { pageTitle: "Edit User", user: user, path: req.path, formErrors: Array() });
     }).catch(error => {
         console.log(error);
     })
@@ -83,28 +76,37 @@ exports.updateUser = async (req, res, next) => {
     const tokenExpiration = undefined;
     const userId = req.body.userid;
 
-    const existingUser = await User.findById(userId).then(user => {
-        return user;
-    }).catch(err => {
-        console.log(err);
-        return null;
-    });
+    const validationErrors = validationResult(req);
 
-    let newPasswordHash = existingUser.password;
-
-    
-
-    if(existingUser.password !== password){
-        newPasswordHash = await bcrypt.hash(password, 12);
-    }
-
-    const user = new User(firstname, lastname, age, role, qualification, email, phone, newPasswordHash, score, resetToken, tokenExpiration);
-        return await user.update(userId).then(result => {
-            res.redirect("/admin/users");
+    if(!validationErrors.isEmpty()){
+        User.findById(userId).then(user => {
+            res.render("./admin/edit-user.ejs", { pageTitle: "Edit User", user: user, path: req.path, formErrors: validationErrors.array() });
         }).catch(error => {
             console.log(error);
         })
+    } else {
+        const existingUser = await User.findById(userId).then(user => {
+            return user;
+        }).catch(err => {
+            console.log(err);
+            return null;
+        });
     
+        let newPasswordHash = existingUser.password;
+    
+        
+    
+        if(existingUser.password !== password){
+            newPasswordHash = await bcrypt.hash(password, 12);
+        }
+    
+        const user = new User(firstname, lastname, age, role, qualification, email, phone, newPasswordHash, score, resetToken, tokenExpiration);
+            return await user.update(userId).then(result => {
+                res.redirect("/admin/users");
+            }).catch(error => {
+                console.log(error);
+            })
+    }
 }
 
 exports.deleteUser = (req, res, next) => {
