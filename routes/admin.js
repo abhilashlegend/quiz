@@ -24,7 +24,7 @@ router.post('/add-user', [
             return true;
     })
 }).normalizeEmail(),
-    body('phone').isMobilePhone('en-IN').withMessage("Please enter valid Mobile Number"),
+    body('phone').isNumeric().withMessage("Please enter valid Mobile Number"),
     body('password').notEmpty().withMessage("Password is required").trim()
 ] ,adminAuth, adminController.saveUser);
 
@@ -36,7 +36,7 @@ router.post('/edit-user', [
     body('age').notEmpty().withMessage("Age is required").isNumeric().withMessage("Age must be numerical").isInt({min: 3, max: 100}).withMessage("Age must be greater than 3 or less than 100"),
     body('qualification').notEmpty().withMessage("Qualification is required"),
     body('email').isEmail().withMessage("Please enter valid email address").normalizeEmail(),
-    body('phone').isMobilePhone('en-IN').withMessage("Please enter valid Mobile Number"),
+    body('phone').isNumeric().withMessage("Please enter valid Mobile Number"),
     body('password').notEmpty().withMessage("Password is required").trim()
 ], adminAuth, adminController.updateUser);
 

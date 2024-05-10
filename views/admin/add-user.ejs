@@ -45,52 +45,61 @@
                 <form method="post" action="/admin/add-user">
                     <div class="mb-3">
                         <label for="firstname" class="form-label">First Name</label>
-                        <input type="text" class="form-control <%= formErrors.find(e => e.path === 'firstname') ? 'is-invalid' : '' %>" id="firstname" name="firstname" />
+                        <input type="text" value="<%= formdata.firstname %>" class="form-control <%= formErrors.find(e => e.path === 'firstname') ? 'is-invalid' : '' %>" id="firstname" name="firstname" />
                         <div class="invalid-feedback"><%= firstnameError %></div>
                     </div>
 
                     <div class="mb-3">
                         <label for="lastname" class="form-label">Last Name</label>
-                        <input type="text" class="form-control <%= formErrors.find(e => e.path === 'lastname') ? 'is-invalid' : '' %>" id="lastname" name="lastname" />
+                        <input type="text" value="<%= formdata.lastname %>" class="form-control <%= formErrors.find(e => e.path === 'lastname') ? 'is-invalid' : '' %>" id="lastname" name="lastname" />
                         <div class="invalid-feedback"><%= lastnameError %></div>
                     </div>
 
                     <div class="mb-3">
                         <label for="age" class="form-label">Age</label>
-                        <input type="text" class="form-control <%= formErrors.find(e => e.path === 'age') ? 'is-invalid' : '' %>" id="age" name="age" />
+                        <input type="text" value="<%= formdata.age %>" class="form-control <%= formErrors.find(e => e.path === 'age') ? 'is-invalid' : '' %>" id="age" name="age" />
                         <div class="invalid-feedback"><%= ageError %></div>
                     </div>
 
                     <div class="mb-3">
                         <label for="role" class="form-label">Role</label>
                         <select name="role" id="role" class="form-control">
-                            <option value="subscriber">Subscriber</option>
-                            <option value="creator">Creator</option>
-                            <option value="admin">Admin</option>
+                            <%
+                             let selected = (formdata.role === 'subscriber') ? 'selected' : '' 
+                             %>
+                            <option value="subscriber" <%= selected %>>Subscriber</option>
+                            <%
+                                selected = (formdata.role === 'creator') ? 'selected' : '' 
+                             %>
+                            <option value="creator" <%= selected %>>Creator</option>
+                            <%
+                                selected = (formdata.role === 'admin') ? 'selected' : '' 
+                             %>
+                            <option value="admin" <%= selected %>>Admin</option>
                         </select>
                     </div>
 
                     <div class="mb-3">
                         <label for="qualification" class="form-label">Qualification</label>
-                        <input type="text" class="form-control <%= formErrors.find(e => e.path === 'qualification') ? 'is-invalid' : '' %>" id="qualification" name="qualification" />
+                        <input type="text" value="<%= formdata.qualification %>" class="form-control <%= formErrors.find(e => e.path === 'qualification') ? 'is-invalid' : '' %>" id="qualification" name="qualification" />
                         <div class="invalid-feedback"><%= qualificationError %></div>
                     </div>
 
                     <div class="mb-3">
                         <label for="email" class="form-label">Email</label>
-                        <input type="email" class="form-control <%= formErrors.find(e => e.path === 'email') ? 'is-invalid' : '' %>" id="email" name="email" />
+                        <input type="email" value="<%= formdata.email %>" class="form-control <%= formErrors.find(e => e.path === 'email') ? 'is-invalid' : '' %>" id="email" name="email" />
                         <div class="invalid-feedback"><%= emailError %></div>
                     </div>
 
                     <div class="mb-3">
                         <label for="phone" class="form-label">Phone</label>
-                        <input type="text" class="form-control <%= formErrors.find(e => e.path === 'phone') ? 'is-invalid' : '' %>" id="phone" name="phone" />
+                        <input type="text" value="<%= formdata.phone %>" class="form-control <%= formErrors.find(e => e.path === 'phone') ? 'is-invalid' : '' %>" id="phone" name="phone" />
                         <div class="invalid-feedback"><%= phoneError %></div>
                     </div>
 
                     <div class="mb-3">
                         <label for="password" class="form-label">Password</label>
-                        <input type="password" class="form-control <%= formErrors.find(e => e.path === 'password') ? 'is-invalid' : '' %>" id="password" name="password" />
+                        <input type="password" value="<%= formdata.password %>" class="form-control <%= formErrors.find(e => e.path === 'password') ? 'is-invalid' : '' %>" id="password" name="password" />
                         <div class="invalid-feedback"><%= passwordError %></div>
                     </div>
 

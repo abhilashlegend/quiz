@@ -11,7 +11,7 @@ exports.dashboardPage = (req, res, next) => {
 }
 
 exports.addUserPage = (req, res, next) => {
-    res.render('./admin/add-user.ejs', {pageTitle: 'Add User', path: req.path, formErrors: Array() });
+    res.render('./admin/add-user.ejs', {pageTitle: 'Add User', path: req.path, formErrors: Array(), formdata: req.body });
 }
 
 exports.saveUser = (req, res, next) => {
@@ -30,7 +30,7 @@ exports.saveUser = (req, res, next) => {
     const validationErrors = validationResult(req);
 
     if(!validationErrors.isEmpty()){
-        return res.status(422).render('./admin/add-user.ejs', {pageTitle: 'Add User', path: req.path, formErrors: validationErrors.array() });
+        return res.status(422).render('./admin/add-user.ejs', {pageTitle: 'Add User', path: req.path, formErrors: validationErrors.array(), formdata: req.body });
     } else {
         bcrypt.hash(password, 12).then(encrptedPassword => {
             const newUser = new User(firstname, lastname, age, role, qualification, email, phone, encrptedPassword, score, resetToken, tokenExpiration);
