@@ -28,7 +28,7 @@ exports.saveUser = (req, res, next) => {
     const tokenExpiration = undefined;
 
     const validationErrors = validationResult(req);
-
+   
     if(!validationErrors.isEmpty()){
         return res.status(422).render('./admin/add-user.ejs', {pageTitle: 'Add User', path: req.path, formErrors: validationErrors.array(), formdata: req.body });
     } else {
@@ -36,8 +36,11 @@ exports.saveUser = (req, res, next) => {
             const newUser = new User(firstname, lastname, age, role, qualification, email, phone, encrptedPassword, score, resetToken, tokenExpiration);
             newUser.save().then(result => {
                 res.redirect("/admin/users");
-            }).catch(error => {
-                console.log(error);
+            }).catch(err => {
+                console.log(err);
+                const error = new Error(err);
+                error.httpStatusCode = 500;
+                return next(error);
             })
         });
     }

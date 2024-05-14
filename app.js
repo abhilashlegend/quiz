@@ -55,7 +55,11 @@ app.get('/500', (req, res, next) => {
 })
 
 app.use((req, res, next) => {
-    res.render("error/404.ejs", {pageTitle: "Page not found"})
+    res.render("error/404.ejs", {pageTitle: "Page not found"});
+})
+
+app.use((error, req, res, next) => {
+    res.redirect("/500");
 })
 
 mongoConnect(() => {
