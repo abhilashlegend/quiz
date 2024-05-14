@@ -50,6 +50,10 @@ app.use(quizRoutes);
 
 app.use("/admin", adminRoutes );
 
+app.get('/500', (req, res, next) => {
+    res.render("error/500.ejs", {pageTitle: "Internal Server Error"});
+})
+
 app.use((req, res, next) => {
     res.render("error/404.ejs", {pageTitle: "Page not found"})
 })

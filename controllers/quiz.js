@@ -124,12 +124,12 @@ exports.signin = (req, res, next) => {
             }).catch(error => {
                 console.log(error);
                 res.flash('error', error);
-                res.redirect("/login");
+                res.redirect("/500");
             })
         }).catch(error => {
             req.flash('error', error);
             console.log(error);
-            res.redirect("/login");
+            res.redirect("/500");
         })
     }    
 }
@@ -176,11 +176,13 @@ exports.reset = (req, res, next) => {
          
                 }).catch(error => {
                     console.log(error);
+                    res.redirect("/500");
                 })
             })
         }
     }).catch(error => {
         console.log(error);
+        res.redirect("/500");
     })
 }
 
@@ -196,6 +198,7 @@ exports.newPasswordPage = (req, res, next) => {
         }
     }).catch(error => {
         console.log(error);
+        res.redirect("/500");
     })
 }
 
@@ -220,6 +223,7 @@ exports.updateNewPassword = (req, res, next) => {
         }
     }).catch(error => {
         console.log(error);
+        res.redirect("/500");
     })
 
 }
@@ -242,6 +246,7 @@ exports.quizzesPage = (req, res, next) => {
         res.render("quizzes.ejs", {pageTitle: "Quizzes", quizzes: quizzes, successMsg: req.flash('success')  })
     }).catch(error => {
         console.log(error);
+        res.redirect("/500");
     })
 }
 
@@ -269,6 +274,7 @@ exports.quizPage = (req, res, next) => {
         res.render("quiz", {pageTitle: "Quiz", question: questionsList[questionno], currentQno: currentQno, nextQIndex: nextQno, prevQIndex: prevQno, quizid: quizid});
     }).catch(error => {
         console.log(error);
+        res.redirect("/500");
     });
 }
 
@@ -295,5 +301,6 @@ exports.saveAnswer = (req, res, next) => {
         res.redirect(nextUrl);
     }).catch(err => {
         console.log(err);
+        res.redirect("/500");
     })
 }
