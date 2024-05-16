@@ -52,16 +52,22 @@ exports.usersPage = (req, res, next) => {
     User.fetchAll().then(users => {
         allUsers = users;
         res.render("./admin/users.ejs", {pageTitle: "Users", users: allUsers, path: req.path });
-    }).catch(error => {
-        console.log(error);
-    })    
+    }).catch(err => {
+        console.log(err);
+        const error = new Error(err);
+        error.httpStatusCode = 500;
+        return next(error);
+    });    
 }
 
 exports.editUserPage = (req, res, next) => {
     User.findById(req.params.userId).then(user => {
         res.render("./admin/edit-user.ejs", { pageTitle: "Edit User", user: user, path: req.path, formErrors: Array() });
-    }).catch(error => {
-        console.log(error);
+    }).catch(err => {
+        console.log(err);
+        const error = new Error(err);
+        error.httpStatusCode = 500;
+        return next(error);
     })
 }
 
@@ -84,8 +90,11 @@ exports.updateUser = async (req, res, next) => {
     if(!validationErrors.isEmpty()){
         User.findById(userId).then(user => {
             res.render("./admin/edit-user.ejs", { pageTitle: "Edit User", user: user, path: req.path, formErrors: validationErrors.array() });
-        }).catch(error => {
-            console.log(error);
+        }).catch(err => {
+            console.log(err);
+            const error = new Error(err);
+            error.httpStatusCode = 500;
+            return next(error);
         })
     } else {
         const existingUser = await User.findById(userId).then(user => {

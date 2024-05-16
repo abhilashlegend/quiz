@@ -246,7 +246,7 @@ exports.quizzesPage = (req, res, next) => {
         res.render("quizzes.ejs", {pageTitle: "Quizzes", quizzes: quizzes, successMsg: req.flash('success')  })
     }).catch(error => {
         console.log(error);
-        res.redirect("/500");
+        
     })
 }
 

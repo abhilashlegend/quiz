@@ -1,5 +1,5 @@
 const getDb = require('../util/database').getDb;
-const mongodb = require('mongodb');
+const mongodbz = require('mongodb');
 
 class Option {
     constructor(option, questionId, iscorrect) {
