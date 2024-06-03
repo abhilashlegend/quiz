@@ -10,11 +10,29 @@ const mongoDbStore = require('connect-mongodb-session')(session);
 //const cookieParser =  require('cookie-parser');
 //const { doubleCsrf: csrf } = require('csrf-csrf');
 const flash = require('connect-flash');
+const multer = require('multer');
 
 const store = new mongoDbStore({
     uri: 'mongodb://127.0.0.1:27017/quiz',
     collection: 'sessions'
 });
+
+const fileStorage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, path.join(__dirname, 'public/images'));
+    },
+    filename: (req, file, cb) => {  
+        cb(null, new Date().toISOString().replace(/:/g, "-") + '-' + file.originalname);
+    }
+})
+
+const fileFilter = (req, file, cb) => {
+    if(file.mimetype === 'image/png' || file.mimetype === 'image/jpg' || file.mimetype === 'image/jpeg'){
+        cb(null, true);
+    } else {
+        cb(null, false);
+    }
+}
 
 /*
 const csrfProtection = csrf({
@@ -25,7 +43,10 @@ const csrfProtection = csrf({
 
 
 app.use(bodyParser.urlencoded({extended: false}));
+app.use(multer({storage: fileStorage, fileFilter: fileFilter}).single('image'))
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/public', express.static(path.join(__dirname, 'public')));
+app.use('/images', express.static(path.join(__dirname, 'public/images')));
 app.use('/css', express.static(path.join(__dirname, 'node_modules/bootstrap/dist/css')));
 app.use('/js', express.static(path.join(__dirname, 'node_modules/bootstrap/dist/js')));
 app.use('/js', express.static(path.join(__dirname, 'node_modules/jquery/dist')));

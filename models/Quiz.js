@@ -2,14 +2,19 @@ const getDb = require('../util/database').getDb;
 const mongodb = require('mongodb');
 
 class Quiz {
-    constructor(title, userId){
+    constructor(title, imageUrl, userId){
         this.title = title;
-        this.userId = userId;
+        this.imageUrl = imageUrl;
+        this.userId = new mongodb.ObjectId(userId);
     }
 
     save() {
         const db = getDb();
-        return db.collection('quizzes').insertOne(this);
+        return db.collection('quizzes').insertOne(this).then(result => {
+            console.log("Quiz saved");
+        }).catch(error => {
+            console.log(error);
+        });
     }
 
     static fetchAll() {

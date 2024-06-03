@@ -7,13 +7,25 @@
         <div class="row">
             <div class="col-md-6 offset-md-3">
                 <h1>Edit Quiz</h1>
-                <form method="post" action="/admin/edit-quiz">
+                <form method="post" action="/admin/edit-quiz" enctype="multipart/form-data">
                     <div class="mb-3">
                         <label for="title" class="form-label">Title</label>
                         <input type="text" class="form-control" value="<%= quiz.title %>" id="title" name="title" />
                     </div>
+
+                    <div class="mb-3">
+                        <img src="<%= quiz.imageUrl %>" alt="<%= quiz.title %>" />
+                    </div>
+
+                    
+
+                    <div class="mb-3">
+                        <label for="image" class="form-label">Image</label>
+                        <input type="file" class="form-control" id="image" name="image" />
+                    </div>
                     
                     <div class="mb-3">
+                        <input type="hidden" name="oldImagePath" id="oldImagePath" value="<%= quiz.imageUrl %>" />
                         <input type="hidden" name="quizid" id="quizid" value="<%= quiz._id %>" />
                         <button type="submit" class="btn btn-primary">Submit</button>
                         <button type="reset" class="btn btn-danger">Reset</button>

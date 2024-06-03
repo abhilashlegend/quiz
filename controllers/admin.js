@@ -5,6 +5,7 @@ const Option = require("../models/Option");
 const bcrypt = require('bcryptjs');
 const { error } = require("jquery");
 const { validationResult } = require('express-validator');
+const path = require('path');
 
 exports.dashboardPage = (req, res, next) => {
     res.render('./admin/dashboard.ejs', { pageTitle: 'Admin Dashboard', path: req.path });
@@ -131,7 +132,7 @@ exports.deleteUser = (req, res, next) => {
 }
 
 exports.addQuizPage = (req, res, next) => {
-    res.render("./admin/add-quiz.ejs", {pageTitle: "Add Quiz", path: req.path })
+    res.render("./admin/add-quiz.ejs", {pageTitle: "Add Quiz", path: req.path, formdata: req.body, errorMsg: '' })
 }
 
 exports.quizPage = (req, res, next) => {
@@ -155,11 +156,26 @@ exports.quizPage = (req, res, next) => {
 exports.addQuiz = (req, res, next) => {
     const title = req.body.title;
     const userId = req.session.user._id;
-    const quiz = new Quiz(title, userId);
+    const image = req.file;
+    let imageUrl = '';
+    
+    if(!image && image !== undefined){
+        return res.status(422).render('./admin/add-quiz', {pageTitle: "Add Quiz", path: req.path, formdata: { title }, errorMsg: 'Attached file is not a image' })
+    } else if(image === undefined){
+        imageUrl = '';
+    } else {
+        imageUrl = `/images/${req.file.filename}`;
+    }
+
+    const quiz = new Quiz(title, imageUrl, userId);
+    
     quiz.save().then(result => {
         res.redirect("/admin/quizzes");
-    }).catch(error => {
-        console.log(error);
+    }).catch(err => {
+        console.log(err);
+        const error = new Error(err);
+        error.httpStatusCode = 500;
+        return next(error);
     })
 }
 
@@ -180,7 +196,15 @@ exports.updateQuiz = (req, res, next) => {
     const title = req.body.title;
     const quizId = req.body.quizid;
     const userId = req.session.user._id;
-    const quiz = new Quiz(title, userId);
+    const image = req.file;
+    let newImagePath = req.oldImagePath;
+    if(image){
+        newImagePath = image.path;
+    } else {
+        newImagePath = req.oldImagePath;
+    }
+
+    const quiz = new Quiz(title, newImagePath, userId);
     quiz.update(quizId).then(result => {
         res.redirect("/admin/quizzes");
     }).catch(error => {
